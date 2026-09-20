@@ -1,0 +1,10 @@
+# V7.4.1: snapshots provide regional visual context, while a local Frontier is
+# the only VLM-selectable navigation action.
+extends: eval_goatbench_goal_topomap_v7_4_region_topology_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_4_1_frontier_context_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    region_shortlist:
+      frontier_only:
+        enabled: true

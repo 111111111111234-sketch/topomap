@@ -1,0 +1,11 @@
+# V7.2-B: a Frontier commitment survives TSDF frontier re-extraction by
+# rebinding its geometric anchor to a nearby reachable current Frontier.
+extends: eval_goatbench_goal_topomap_v7_2_explore_commitment_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_2b_geometric_rebind_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    explore_commitment:
+      geometric_rebind:
+        enabled: true
+        max_anchor_distance_voxels: 8.0

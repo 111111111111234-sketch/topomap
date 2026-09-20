@@ -1,0 +1,11 @@
+# Computes unified decisions beside the frozen V2-D execution path on the
+# dedicated short manifest. The previous version accidentally inherited the
+# full 12-scene development run.
+extends: eval_goatbench_hgr_dual_topo_v2_d_smoke.yaml
+exp_name: exp_dev_goatbench_hierarchical_navigation_shadow_smoke_r2
+record_run_fingerprint: true
+hierarchical_navigation:
+  enabled: true
+  shadow_only: true
+  semantic_parse_attempts: 2
+  max_verification_attempts: 2

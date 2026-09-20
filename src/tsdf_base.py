@@ -439,6 +439,29 @@ class TSDFPlannerBase:
         else:
             return np.linalg.norm(p1 - p2), None
 
+    def get_direct_geodesic_distance(
+        self, p1, p2, height, pathfinder, input_voxel=True
+    ):
+        """Query Pathfinder once without random endpoint recovery.
+
+        This is intended for diagnostics: unlike ``get_distance``, it never
+        samples nearby navigable points and therefore cannot consume the
+        Pathfinder random stream used by navigation.
+        """
+        if input_voxel:
+            p1_world = p1 * self._voxel_size + self._vol_origin[:2]
+            p2_world = p2 * self._voxel_size + self._vol_origin[:2]
+        else:
+            p1_world = p1
+            p2_world = p2
+        path = habitat_sim.ShortestPath()
+        path.requested_start = pos_normal_to_habitat(np.append(p1_world, height))
+        path.requested_end = pos_normal_to_habitat(np.append(p2_world, height))
+        found_path = pathfinder.find_path(path)
+        if not found_path:
+            return float("inf"), None
+        return float(path.geodesic_distance), path.points
+
     def habitat2voxel(self, pts):
         pts_normal = pos_habitat_to_normal(pts)
         pts_voxel = self.normal2voxel(pts_normal)

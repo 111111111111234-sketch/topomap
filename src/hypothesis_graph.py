@@ -110,6 +110,7 @@ class HypothesisNode:
     creation_time: float = field(default_factory=time.time)
     last_update_time: float = field(default_factory=time.time)
     visit_count: int = 0
+    independent_observation_refs: List[str] = field(default_factory=list)
 
     def mark_falsified(self, reason: str, residual: float):
         self.node_type = NodeType.FALSIFIED
@@ -238,12 +239,38 @@ class HypothesisGraph:
 
         while queue:
             current_id = queue.popleft()
-            for dep in self.dependencies.get(current_id, []):
+            for dep in list(self.dependencies.get(current_id, [])):
                 child_id = dep.child_id
                 if child_id in deleted_nodes or child_id not in self.nodes:
                     continue
 
                 child_node = self.nodes[child_id]
+                if (getattr(self, "preserve_independent_evidence", False)
+                        and dep.dependency_type == "supports"):
+                    other_support = any(
+                        parent != current_id and parent in self.nodes
+                        and self.nodes[parent].status != NodeStatus.INVALIDATED
+                        and any(item.child_id == child_id and item.dependency_type == "supports"
+                                for item in dependencies)
+                        for parent, dependencies in self.dependencies.items())
+                    if other_support:
+                        self.dependencies[current_id] = [item for item in self.dependencies.get(current_id, [])
+                                                         if item is not dep]
+                        if current_id in child_node.parent_ids:
+                            child_node.parent_ids.remove(current_id)
+                        if current_id in self.nodes and child_id in self.nodes[current_id].child_ids:
+                            self.nodes[current_id].child_ids.remove(child_id)
+                        continue
+                if (getattr(self, "preserve_independent_evidence", False)
+                        and child_node.independent_observation_refs):
+                    # Retract this dependency, not the independently observed fact.
+                    if current_id in child_node.parent_ids:
+                        child_node.parent_ids.remove(current_id)
+                    if current_id in self.nodes and child_id in self.nodes[current_id].child_ids:
+                        self.nodes[current_id].child_ids.remove(child_id)
+                    self.dependencies[current_id] = [item for item in self.dependencies.get(current_id, [])
+                                                     if item.child_id != child_id]
+                    continue
                 child_node.status = NodeStatus.INVALIDATED
                 child_node.falsification_reason = (
                     f"Dependent on falsified node {current_id}"
@@ -257,11 +284,29 @@ class HypothesisGraph:
         self.stats["cascade_deletions"] += len(deleted_nodes)
         return len(deleted_nodes)
 
+    def cascade_affected_ids(self, node_id):
+        affected, queue = set(), deque([node_id])
+        while queue:
+            current = queue.popleft()
+            for dependency in self.dependencies.get(current, []):
+                child = self.nodes.get(dependency.child_id)
+                if child is None or child.node_id in affected:
+                    continue
+                if getattr(self, "preserve_independent_evidence", False) and child.independent_observation_refs:
+                    continue
+                affected.add(child.node_id)
+                queue.append(child.node_id)
+        return sorted(affected)
+
     def _remove_node(self, node_id: str):
         if node_id not in self.nodes:
             return
 
         node = self.nodes[node_id]
+        if getattr(node, "navigation_pin_owners", None):
+            # Keep invalidated evidence available to its active verifier.
+            node.navigation_pending_removal = True
+            return
         self.hypothesis_nodes.discard(node_id)
         self.observed_nodes.discard(node_id)
         self.falsified_nodes.discard(node_id)
@@ -411,4 +456,5 @@ def create_observed_node_from_snapshot(
         observed_class=observed_class,
         confidence=confidence,
         associated_object=snapshot,
+        independent_observation_refs=[f"snapshot:{snapshot.image}"],
     )

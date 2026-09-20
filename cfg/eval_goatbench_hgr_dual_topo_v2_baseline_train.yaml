@@ -1,0 +1,5 @@
+extends: eval_goatbench_place_route_only_qwen3vl_dashscope_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_baseline
+record_run_fingerprint: true
+active_topology:
+  enabled: false

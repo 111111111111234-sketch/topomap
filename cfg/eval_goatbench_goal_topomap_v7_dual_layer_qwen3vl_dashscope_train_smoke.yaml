@@ -1,0 +1,4 @@
+# One fixed episode to validate source mappings, traces, and safe fallbacks.
+extends: eval_goatbench_goal_topomap_v7_dual_layer_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_dual_layer_qwen3vl30b_dashscope_train_smoke"
+episode_manifest: "cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json"

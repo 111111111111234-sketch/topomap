@@ -1,0 +1,5 @@
+# Fast fixed development subset: compare V7.1-B only against the matching
+# V7.0 3 scenes x 2 episodes reference; do not mix with the 12x2 results.
+extends: eval_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl_dashscope_train.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl30b_dashscope_train_3x2"
+episode_manifest: "cfg/manifests/goat_train_fast_3x2_seed77.json"

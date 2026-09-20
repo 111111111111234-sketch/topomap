@@ -1,0 +1,11 @@
+extends: eval_goatbench_place_source_identity_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_place_goal_phase_c_qwen3vl30b_dashscope_train"
+# The Phase-C selector includes all deduplicated executable visual candidates.
+prefiltering: false
+place_goal_navigation:
+  enabled: true
+  view_spacing_m: 0.5
+  cache_paths: true
+  cache_visuals: true
+  topological_actions: false
+  event_driven_selection: false

@@ -1,0 +1,13 @@
+# Unified dual-layer V7 on the fixed 3 scenes x 2 episodes development slice.
+# Layer 1 is the persistent scene topology; Layer 2 is DynamicGoalTopology.
+# The policy chooses DIRECT / exact-gated REVISIT / EXPLORE, while TSDF and
+# Habitat Pathfinder remain the metric motion substrate.
+extends: eval_goatbench_goal_topomap_v7_dynamic_active_qwen3vl_dashscope_train_fast_r2.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_dual_layer_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  revisit_gate:
+    bind_selected_action: true
+  dual_layer_planner:
+    enabled: true
+    goal_types: [object, description, image]

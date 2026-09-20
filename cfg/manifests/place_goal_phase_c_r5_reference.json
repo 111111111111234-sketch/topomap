@@ -1,0 +1,31 @@
+{
+  "reference": "R5 completed 12x2 development run",
+  "scope": "Frozen result artifacts, not a claim of an archived historical source checkout",
+  "subtask_metrics": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/subtask_metrics.json",
+  "files": [
+    {
+      "path": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/subtask_metrics.json",
+      "sha256": "dfda1c579b80edab018893898e2ece9d596b29719219d3dc1ae7f80cfec4bdc5"
+    },
+    {
+      "path": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/metric_validity.json",
+      "sha256": "4605d4a99a50ba6c7367ea4ad15d41f0f9a4a9bc6d04d3dfaf69deff55f68b8a"
+    },
+    {
+      "path": "cfg/manifests/goat_train_dev_12x2_seed77.json",
+      "sha256": "edcb9020f8c839c28393de70c064e771fb194138cb5138e7e6b23ad70a5bb749"
+    },
+    {
+      "path": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/spl_by_distance.pkl",
+      "sha256": "e0036d59fcf7044a9cb00d1eb4a3fa0fdc3b40ab8366668946db66cdb365afb0"
+    },
+    {
+      "path": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/success_by_distance.pkl",
+      "sha256": "171083acec4fd3a328e34253d3b574963b37b8335f1a6b661580d18254d58daf"
+    },
+    {
+      "path": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/eval_goatbench_place_route_only_qwen3vl_dashscope_train_r5.yaml",
+      "sha256": "20006b124bf0a6d2d18e5168102884c6f1add9282933c6b7e05047825203d1d5"
+    }
+  ]
+}

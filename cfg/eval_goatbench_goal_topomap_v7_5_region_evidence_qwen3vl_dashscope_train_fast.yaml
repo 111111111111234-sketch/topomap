@@ -1,0 +1,9 @@
+# V7.5: a regional snapshot answer is evidence for a local Frontier, never a
+# bypass of the strict historical revisit gate.
+extends: eval_goatbench_goal_topomap_v7_4_region_topology_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_5_region_evidence_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    region_shortlist:
+      snapshot_evidence: {enabled: true}

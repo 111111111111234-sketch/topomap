@@ -1,0 +1,10 @@
+# P3: source-bound historical reuse, baseline decision cadence and APPROACH stop.
+extends: eval_goatbench_dual_dynamic_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_memory_smoke_r1
+episode_manifest: cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json
+navigation_backend: hgr_dual_topo_memory
+dual_dynamic_navigation:
+  stage: memory
+  object_approach: false
+  preserve_hgr_selector: false
+  preserve_hgr_stop: true

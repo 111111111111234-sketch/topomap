@@ -1,0 +1,30 @@
+# Clean route-only integration. The base is true HGR, not V2/V7/Phase C.
+extends: eval_goatbench_hgr_baseline_qwen3vl_dashscope_train.yaml
+exp_name: exp_dev_goatbench_dual_dynamic_route_only
+record_run_fingerprint: true
+navigation_backend: dual_dynamic_route_only
+
+active_topology:
+  enabled: true
+  mode: stable_only
+  place_topology:
+    enabled: true
+    stage: route_only
+    place_spacing_m: 1.5
+
+dual_dynamic_navigation:
+  stage: route_only
+  object_approach: true
+  preserve_hgr_selector: true
+  preserve_hgr_stop: true
+
+hgr_dual_topo:
+  enabled: false
+hgr_topology_fusion:
+  enabled: false
+  object_approach: false
+place_goal_navigation:
+  enabled: false
+  route_guidance: false
+hierarchical_navigation:
+  enabled: false

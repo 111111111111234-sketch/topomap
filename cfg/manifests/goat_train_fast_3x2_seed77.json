@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "dataset_dir": "data/goat_bench/train/content",
+  "seed": 77,
+  "purpose": "fast_iteration_fixed_dev_set",
+  "selection": {
+    "scenes": 3,
+    "episodes_per_scene": 2,
+    "expected_subtasks": 49,
+    "task_type_counts": {"image": 13, "description": 17, "object": 19}
+  },
+  "splits": {
+    "1": [
+      {"scene_file": "ENiCjXWB6aQ.json", "scene_name": "ENiCjXWB6aQ", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "ACZZiU6BXLz.json", "scene_name": "ACZZiU6BXLz", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "pcpn6mFqFCg.json", "scene_name": "pcpn6mFqFCg", "episode_index": 0, "episode_id": "0"}
+    ],
+    "2": [
+      {"scene_file": "ENiCjXWB6aQ.json", "scene_name": "ENiCjXWB6aQ", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "ACZZiU6BXLz.json", "scene_name": "ACZZiU6BXLz", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "pcpn6mFqFCg.json", "scene_name": "pcpn6mFqFCg", "episode_index": 1, "episode_id": "1"}
+    ]
+  }
+}

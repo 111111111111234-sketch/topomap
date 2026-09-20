@@ -1,0 +1,5 @@
+# One scene x one episode smoke for V7.1-B. It covers two subtasks of every GOAT
+# goal type and writes to an isolated result directory.
+extends: eval_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl30b_dashscope_train_smoke"
+episode_manifest: "cfg/manifests/goat_train_smoke_1x1_seed77.json"

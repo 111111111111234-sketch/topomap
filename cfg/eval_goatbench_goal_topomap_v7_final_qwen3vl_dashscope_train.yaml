@@ -1,0 +1,10 @@
+# Final simplified V7: C-strict expressed through one goal-conditioned
+# projection of the persistent scene topology. The projection is shared by
+# Object/Description/Image and keeps the validated C-strict scores unchanged.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_overlay_final_qwen3vl30b_dashscope_train"
+
+active_topology:
+  goal_conditioned_overlay:
+    enabled: true
+    goal_types: [object, description, image]

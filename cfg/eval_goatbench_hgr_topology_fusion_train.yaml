@@ -1,0 +1,8 @@
+# HGR selects with Place routes; B-R5 executes them under the HGR terminal protocol.
+extends: eval_goatbench_place_route_only_qwen3vl_dashscope_train_r5.yaml
+exp_name: exp_dev_goatbench_hgr_topology_fusion_train
+hgr_topology_fusion:
+  enabled: true
+place_goal_navigation:
+  enabled: false
+  route_guidance: false

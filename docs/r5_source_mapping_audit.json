@@ -1,0 +1,386 @@
+[
+  {
+    "subtask_id": "00062-ACZZiU6BXLz_0_4",
+    "step": 51,
+    "kind": "snapshot",
+    "image": "11-view_2.png",
+    "ids": [
+      182
+    ],
+    "end_graph_images": {
+      "182": "50-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00062-ACZZiU6BXLz_ep_0.jsonl",
+    "trace_line": 114,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 5559
+  },
+  {
+    "subtask_id": "00062-ACZZiU6BXLz_0_5",
+    "step": 61,
+    "kind": "snapshot",
+    "image": "1-view_0.png",
+    "ids": [
+      3
+    ],
+    "end_graph_images": {
+      "3": "1-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00062-ACZZiU6BXLz_ep_0.jsonl",
+    "trace_line": 136,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 5886
+  },
+  {
+    "subtask_id": "00062-ACZZiU6BXLz_0_6",
+    "step": 74,
+    "kind": "snapshot",
+    "image": "41-view_3.png",
+    "ids": [
+      462
+    ],
+    "end_graph_images": {
+      "462": "73-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00062-ACZZiU6BXLz_ep_0.jsonl",
+    "trace_line": 164,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 6211
+  },
+  {
+    "subtask_id": "00241-h6nwVLpAKQz_0_2",
+    "step": 17,
+    "kind": "snapshot",
+    "image": "1-view_0.png",
+    "ids": [
+      17
+    ],
+    "end_graph_images": {
+      "17": "1-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00241-h6nwVLpAKQz_ep_0.jsonl",
+    "trace_line": 36,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 15044
+  },
+  {
+    "subtask_id": "00241-h6nwVLpAKQz_0_2",
+    "step": 23,
+    "kind": "snapshot",
+    "image": "8-view_2.png",
+    "ids": [
+      67
+    ],
+    "end_graph_images": {
+      "67": "22-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00241-h6nwVLpAKQz_ep_0.jsonl",
+    "trace_line": 49,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 15044
+  },
+  {
+    "subtask_id": "00241-h6nwVLpAKQz_0_5",
+    "step": 31,
+    "kind": "snapshot",
+    "image": "24-view_2.png",
+    "ids": [
+      76
+    ],
+    "end_graph_images": {
+      "76": "22-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00241-h6nwVLpAKQz_ep_0.jsonl",
+    "trace_line": 72,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 15414
+  },
+  {
+    "subtask_id": "00685-ENiCjXWB6aQ_0_1",
+    "step": 8,
+    "kind": "snapshot",
+    "image": "0-view_6.png",
+    "ids": [
+      6
+    ],
+    "end_graph_images": {
+      "6": "9-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00685-ENiCjXWB6aQ_ep_0.jsonl",
+    "trace_line": 19,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 479
+  },
+  {
+    "subtask_id": "00685-ENiCjXWB6aQ_0_1",
+    "step": 10,
+    "kind": "snapshot",
+    "image": "0-view_5.png",
+    "ids": [
+      2
+    ],
+    "end_graph_images": {
+      "2": "9-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00685-ENiCjXWB6aQ_ep_0.jsonl",
+    "trace_line": 25,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 479
+  },
+  {
+    "subtask_id": "00685-ENiCjXWB6aQ_0_3",
+    "step": 18,
+    "kind": "snapshot",
+    "image": "9-view_1.png",
+    "ids": [
+      2
+    ],
+    "end_graph_images": {
+      "2": "18-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00685-ENiCjXWB6aQ_ep_0.jsonl",
+    "trace_line": 46,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 843
+  },
+  {
+    "subtask_id": "00720-8B43pG641ff_0_2",
+    "step": 10,
+    "kind": "snapshot",
+    "image": "6-view_1.png",
+    "ids": [
+      120
+    ],
+    "end_graph_images": {
+      "120": null
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00720-8B43pG641ff_ep_0.jsonl",
+    "trace_line": 21,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 7156
+  },
+  {
+    "subtask_id": "00720-8B43pG641ff_0_5",
+    "step": 34,
+    "kind": "snapshot",
+    "image": "1-view_1.png",
+    "ids": [
+      29
+    ],
+    "end_graph_images": {
+      "29": "34-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00720-8B43pG641ff_ep_0.jsonl",
+    "trace_line": 71,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 7734
+  },
+  {
+    "subtask_id": "00062-ACZZiU6BXLz_1_2",
+    "step": 48,
+    "kind": "snapshot",
+    "image": "12-view_0.png",
+    "ids": [
+      114
+    ],
+    "end_graph_images": {
+      "114": "48-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00062-ACZZiU6BXLz_ep_1.jsonl",
+    "trace_line": 108,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 6698
+  },
+  {
+    "subtask_id": "00062-ACZZiU6BXLz_1_7",
+    "step": 100,
+    "kind": "snapshot",
+    "image": "76-view_1.png",
+    "ids": [
+      70
+    ],
+    "end_graph_images": {
+      "70": "100-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00062-ACZZiU6BXLz_ep_1.jsonl",
+    "trace_line": 237,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 8259
+  },
+  {
+    "subtask_id": "00706-YHmAkqgwe2p_0_5",
+    "step": 55,
+    "kind": "snapshot",
+    "image": "37-view_0.png",
+    "ids": [
+      611
+    ],
+    "end_graph_images": {
+      "611": "56-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00706-YHmAkqgwe2p_ep_0.jsonl",
+    "trace_line": 124,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 19939
+  },
+  {
+    "subtask_id": "00706-YHmAkqgwe2p_1_1",
+    "step": 16,
+    "kind": "snapshot",
+    "image": "13-view_0.png",
+    "ids": [
+      34
+    ],
+    "end_graph_images": {
+      "34": "14-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00706-YHmAkqgwe2p_ep_1.jsonl",
+    "trace_line": 32,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 22155
+  },
+  {
+    "subtask_id": "00706-YHmAkqgwe2p_1_3",
+    "step": 38,
+    "kind": "snapshot",
+    "image": "7-view_2.png",
+    "ids": [
+      55
+    ],
+    "end_graph_images": {
+      "55": "40-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00706-YHmAkqgwe2p_ep_1.jsonl",
+    "trace_line": 87,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 22646
+  },
+  {
+    "subtask_id": "00706-YHmAkqgwe2p_1_6",
+    "step": 123,
+    "kind": "snapshot",
+    "image": "84-view_1.png",
+    "ids": [
+      1326
+    ],
+    "end_graph_images": {
+      "1326": "123-view_0.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00706-YHmAkqgwe2p_ep_1.jsonl",
+    "trace_line": 285,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 26131
+  },
+  {
+    "subtask_id": "00188-dQrLTxHvLXU_0_4",
+    "step": 54,
+    "kind": "snapshot",
+    "image": "42-view_4.png",
+    "ids": [
+      84
+    ],
+    "end_graph_images": {
+      "84": "53-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00188-dQrLTxHvLXU_ep_0.jsonl",
+    "trace_line": 122,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_1.log",
+    "end_graph_heading_line": 24458
+  },
+  {
+    "subtask_id": "00624-ooq3SnvC79d_1_3",
+    "step": 32,
+    "kind": "snapshot",
+    "image": "25-view_1.png",
+    "ids": [
+      195
+    ],
+    "end_graph_images": {
+      "195": "32-view_0.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00624-ooq3SnvC79d_ep_1.jsonl",
+    "trace_line": 64,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 12772
+  },
+  {
+    "subtask_id": "00624-ooq3SnvC79d_1_7",
+    "step": 51,
+    "kind": "snapshot",
+    "image": "42-view_1.png",
+    "ids": [
+      324
+    ],
+    "end_graph_images": {
+      "324": "52-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00624-ooq3SnvC79d_ep_1.jsonl",
+    "trace_line": 107,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 13664
+  },
+  {
+    "subtask_id": "00624-ooq3SnvC79d_1_8",
+    "step": 67,
+    "kind": "snapshot",
+    "image": "10-view_0.png",
+    "ids": [
+      43
+    ],
+    "end_graph_images": {
+      "43": "66-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00624-ooq3SnvC79d_ep_1.jsonl",
+    "trace_line": 140,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 14126
+  },
+  {
+    "subtask_id": "00261-fK2vEV32Lag_1_1",
+    "step": 16,
+    "kind": "snapshot",
+    "image": "8-view_0.png",
+    "ids": [
+      122
+    ],
+    "end_graph_images": {
+      "122": "15-view_2.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00261-fK2vEV32Lag_ep_1.jsonl",
+    "trace_line": 33,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 18261
+  },
+  {
+    "subtask_id": "00261-fK2vEV32Lag_1_2",
+    "step": 19,
+    "kind": "snapshot",
+    "image": "5-view_2.png",
+    "ids": [
+      67
+    ],
+    "end_graph_images": {
+      "67": "19-view_0.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00261-fK2vEV32Lag_ep_1.jsonl",
+    "trace_line": 42,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 18472
+  },
+  {
+    "subtask_id": "00188-dQrLTxHvLXU_1_4",
+    "step": 46,
+    "kind": "snapshot",
+    "image": "26-view_5.png",
+    "ids": [
+      19
+    ],
+    "end_graph_images": {
+      "19": "45-view_1.png"
+    },
+    "trace_file": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/active_topology_traces/00188-dQrLTxHvLXU_ep_1.jsonl",
+    "trace_line": 97,
+    "end_graph_log": "results/exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5/log_0.00_1.00_2.log",
+    "end_graph_heading_line": 27786
+  }
+]

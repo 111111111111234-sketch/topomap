@@ -1,0 +1,3 @@
+extends: eval_goatbench_place_route_only_qwen3vl_dashscope_train_r4.yaml
+exp_name: "exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_smoke_r4"
+episode_manifest: "cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json"

@@ -1,0 +1,27 @@
+# V7.1-C: one shared conservative gate for Object, Description and Image.
+# The profile grid is declared before evaluation; "medium" is selected for
+# the first fast split based on V7.1-B shadow distributions.
+extends: eval_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_c_gate_medium_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  revisit_gate:
+    enabled: true
+    goal_types: [object, description, image]
+    selected_profile: medium
+    min_relevance_margin: 0.05
+    max_budget_fraction: 0.20
+    max_revisit_to_explore_ratio: 1.25
+    parameter_grid:
+      lenient:
+        min_relevance_margin: 0.00
+        max_budget_fraction: 0.30
+        max_revisit_to_explore_ratio: 1.50
+      medium:
+        min_relevance_margin: 0.05
+        max_budget_fraction: 0.20
+        max_revisit_to_explore_ratio: 1.25
+      strict:
+        min_relevance_margin: 0.10
+        max_budget_fraction: 0.15
+        max_revisit_to_explore_ratio: 1.00

@@ -1,0 +1,11 @@
+# V7.1-B changes only execution of an HGR-selected historical Snapshot:
+# Pathfinder direct to its immutable capture anchor, then VISITED-only topology,
+# then the untouched original HGR Snapshot navigation as the final fallback.
+extends: eval_goatbench_goal_topomap_v7_1_a_shadow_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_1_b_direct_first_qwen3vl30b_dashscope_train"
+
+active_topology:
+  direct_first_execution:
+    enabled: true
+    goal_types: [object, description, image]
+    anchor_arrival_tolerance_m: 0.15

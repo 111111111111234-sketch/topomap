@@ -1,0 +1,26 @@
+extends: eval_goatbench_activetopo_qwen3vl_dashscope.yaml
+
+exp_name: "exp_eval_goatbench_belieftopo_category_qwen3vl30b_dashscope"
+vlm_max_images: 40
+
+active_topology:
+  enabled: true
+  mode: belief_category
+  correction_mode: soft
+  belief:
+    prior: 0.20
+    top_k: 3
+    decision_margin: 0.15
+    elimination_threshold: 0.05
+    min_negative_verify_views: 2
+    max_view_clusters_per_goal: 64
+    viewpoint_cluster_distance_m: 0.75
+    viewpoint_cluster_angle_deg: 45.0
+  verification:
+    posterior_low: 0.30
+    posterior_high: 0.70
+    navigate_threshold: 0.75
+    max_attempts_per_node_goal: 2
+    cooldown_steps: 5
+    radii_m: [1.0, 1.5, 2.0]
+    samples_per_radius: 16

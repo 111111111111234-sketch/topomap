@@ -1,0 +1,9 @@
+# Revised V7: bind the conservative revisit gate to the exact historical
+# node it evaluated. A different Snapshot selected by the VLM keeps original
+# HGR navigation and cannot inherit another node's route authorization.
+extends: eval_goatbench_goal_topomap_v7_final_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_revised_selected_gate_qwen3vl30b_dashscope_train"
+
+active_topology:
+  revisit_gate:
+    bind_selected_action: true

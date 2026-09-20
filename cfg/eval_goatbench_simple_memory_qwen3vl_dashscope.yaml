@@ -1,0 +1,9 @@
+# Minimal method: original HGR plus stable frontier IDs and failure memory.
+# Snapshot selection, semantic reasoning, VLM prompts, success checks and all
+# provider/model settings inherit unchanged from the frozen Qwen baseline.
+extends: eval_goatbench_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_simple_memory_qwen3vl30b_dashscope"
+
+active_topology:
+  enabled: true
+  mode: simple_memory

@@ -1,0 +1,10 @@
+# V7.4: stable visited-anchor Regions are dynamically ranked; the VLM then
+# chooses a local HGR snapshot/frontier candidate within the selected Regions.
+extends: eval_goatbench_goal_topomap_v7_2b_geometric_rebind_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_4_region_topology_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    region_shortlist:
+      enabled: true
+      max_regions: 2

@@ -1,0 +1,5 @@
+extends: eval_goatbench_hgr_dual_topo_v2_b_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_c_shadow
+record_run_fingerprint: true
+hgr_dual_topo:
+  goal_state: true

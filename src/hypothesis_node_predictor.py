@@ -36,6 +36,8 @@ class HypothesisNodePredictor:
         self.use_spatial_context = cfg.get("use_spatial_context", True)
         self.use_visual_cues = cfg.get("use_visual_cues", True)
         self.prediction_cache = {}
+        self.last_prediction_sources: Dict[int, str] = {}
+        self._last_prediction_source = "heuristic"
 
     def predict_semantic_distribution(
         self,
@@ -49,6 +51,7 @@ class HypothesisNodePredictor:
             return self._predict_with_vlm(
                 frontier_image, spatial_context, observed_history
             )
+        self._last_prediction_source = "heuristic"
         return self._predict_with_heuristics(spatial_context, observed_history)
 
     def _predict_with_vlm(
@@ -80,7 +83,11 @@ Candidate room types: {', '.join(self.common_room_categories)}
 """
 
         try:
-            response = call_openai_api(sys_prompt, [(user_prompt, frontier_img_base64)])
+            response = call_openai_api(
+                sys_prompt,
+                [(user_prompt, frontier_img_base64)],
+                purpose="hypothesis_predictor",
+            )
             if response is None:
                 print("[Hypothesis Predictor] VLM API failed, falling back to heuristics")
                 return self._predict_with_heuristics(spatial_context, observed_history)
@@ -115,6 +122,7 @@ Candidate room types: {', '.join(self.common_room_categories)}
             print(
                 f"[Hypothesis Predictor] VLM prediction: {list(zip(top_categories, top_probs))}"
             )
+            self._last_prediction_source = "vlm"
             return semantic_dist
         except Exception as exc:
             print(f"[Hypothesis Predictor] Error in VLM prediction: {exc}")
@@ -123,6 +131,7 @@ Candidate room types: {', '.join(self.common_room_categories)}
     def _predict_with_heuristics(
         self, spatial_context: Dict, observed_history: List[Dict]
     ) -> SemanticDistribution:
+        self._last_prediction_source = "heuristic"
         nearby_objects = spatial_context.get("nearby_objects", [])
         current_room_type = spatial_context.get("current_room_type")
 
@@ -232,6 +241,7 @@ Candidate room types: {', '.join(self.common_room_categories)}
         self, frontiers: List, spatial_context: Dict, observed_history: List[Dict]
     ) -> Dict[int, SemanticDistribution]:
         predictions = {}
+        self.last_prediction_sources = {}
         for frontier in frontiers:
             if hasattr(frontier, "feature") and frontier.feature is not None:
                 if isinstance(frontier.feature, torch.Tensor):
@@ -247,6 +257,7 @@ Candidate room types: {', '.join(self.common_room_categories)}
                 predictions[frontier.frontier_id] = self._predict_with_heuristics(
                     spatial_context, observed_history
                 )
+                self.last_prediction_sources[frontier.frontier_id] = "heuristic"
                 continue
 
             predictions[frontier.frontier_id] = self.predict_semantic_distribution(
@@ -255,6 +266,7 @@ Candidate room types: {', '.join(self.common_room_categories)}
                 spatial_context=spatial_context,
                 observed_history=observed_history,
             )
+            self.last_prediction_sources[frontier.frontier_id] = self._last_prediction_source
         return predictions
 
     def update_prediction_with_new_observation(

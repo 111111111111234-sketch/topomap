@@ -1,0 +1,6 @@
+extends: eval_goatbench_hgr_dual_topo_v2_c_shadow_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_c
+record_run_fingerprint: true
+hgr_dual_topo:
+  goal_context: true
+  cascade_correction: true

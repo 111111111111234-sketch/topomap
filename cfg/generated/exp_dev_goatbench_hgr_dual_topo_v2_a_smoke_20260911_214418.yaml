@@ -1,0 +1,6 @@
+extends: ../eval_goatbench_hgr_dual_topo_v2_a_smoke_r2.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_a_smoke_20260911_214418
+output_parent_dir: results
+record_run_fingerprint: true
+hgr_topology_fusion:
+  record_decisions: true

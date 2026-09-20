@@ -1,0 +1,5 @@
+# M3 ablation: add goal-scoped evidence/view deduplication.
+extends: eval_goatbench_hgr_dual_topo_memory_semantic_first.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_memory_dedup
+dual_dynamic_navigation:
+  enable_revisit_deduplication: true

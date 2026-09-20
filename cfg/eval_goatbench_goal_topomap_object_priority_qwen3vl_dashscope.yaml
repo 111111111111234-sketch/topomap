@@ -1,0 +1,7 @@
+# Route v4: retain Route v3 for image/description, while current exact-category
+# detections preempt historical route commitments for GOAT object goals.
+extends: eval_goatbench_goal_topomap_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_goal_topomap_route_v4_object_priority_qwen3vl30b_dashscope"
+
+active_topology:
+  object_live_priority: true

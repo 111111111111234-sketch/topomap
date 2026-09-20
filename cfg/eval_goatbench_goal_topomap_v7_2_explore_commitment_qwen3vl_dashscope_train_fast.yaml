@@ -1,0 +1,11 @@
+# V7.2: keep a dual-layer-selected Frontier until it is reached, disappears,
+# becomes invalid, or makes no metric progress for the fixed small budget.
+extends: eval_goatbench_goal_topomap_v7_dual_layer_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_2_explore_commitment_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    explore_commitment:
+      enabled: true
+      min_progress_voxels: 1.0
+      max_no_progress_steps: 3

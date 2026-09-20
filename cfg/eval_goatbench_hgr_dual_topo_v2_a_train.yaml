@@ -1,0 +1,4 @@
+extends: eval_goatbench_hgr_topology_fusion_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_a_train
+hgr_topology_fusion:
+  object_approach: true

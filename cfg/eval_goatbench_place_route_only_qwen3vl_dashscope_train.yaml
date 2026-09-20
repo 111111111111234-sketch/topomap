@@ -1,0 +1,16 @@
+# Phase B: original HGR target selection + Place-graph route execution.
+extends: eval_goatbench_qwen3vl_dashscope.yaml
+exp_name: "exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train"
+scene_dataset_config_path: "data/hm3d_annotated_train_local.scene_dataset_config.json"
+test_data_dir: "data/goat_bench/train/content/"
+episode_manifest: "cfg/manifests/goat_train_dev_12x2_seed77.json"
+
+active_topology:
+  enabled: true
+  # stable_only keeps ActiveTopo metadata out of the HGR VLM prompt and turns
+  # off all previous V6/V7 target-selection and route interventions.
+  mode: stable_only
+  place_topology:
+    enabled: true
+    stage: route_only
+    place_spacing_m: 1.5

@@ -1,0 +1,5 @@
+extends: eval_goatbench_hgr_dual_topo_v2_c_persistent_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_d
+record_run_fingerprint: true
+hgr_dual_topo:
+  cache_paths: true

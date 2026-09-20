@@ -1,0 +1,8 @@
+# Route v5: one goal-conditioned executable view owns DIRECT, REVISIT and
+# EXPLORE decisions. HGR perception and TSDF/Pathfinder execution are retained.
+extends: eval_goatbench_goal_topomap_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_goal_topomap_route_v5_unified_qwen3vl30b_dashscope"
+
+active_topology:
+  object_live_priority: true
+  unified_task_view: true

@@ -1,0 +1,7 @@
+extends: eval_goatbench_hgr_dual_topo_v2_memory_export.yaml
+exp_name: exp_dev_goatbench_hgr_v2_memory_export_fast_3x2_20260912_r1
+episode_manifest: cfg/manifests/goat_train_fast_3x2_seed77.json
+controlled_memory:
+  mode: export
+  directory: results/hgr_v2_memory_checkpoints_fast_3x2_20260912_r1
+  prefix_subtasks: 1

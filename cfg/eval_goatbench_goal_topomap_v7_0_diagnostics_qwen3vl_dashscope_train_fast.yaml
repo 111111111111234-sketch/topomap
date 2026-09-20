@@ -1,0 +1,5 @@
+# Fast fixed development subset: 3 scenes x 2 episodes (49 subtasks).
+# V7.0 remains navigation-identical to V6 and provides the paired reference.
+extends: eval_goatbench_goal_topomap_v7_0_diagnostics_qwen3vl_dashscope_train.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_0_diagnostics_qwen3vl30b_dashscope_train_3x2"
+episode_manifest: "cfg/manifests/goat_train_fast_3x2_seed77.json"

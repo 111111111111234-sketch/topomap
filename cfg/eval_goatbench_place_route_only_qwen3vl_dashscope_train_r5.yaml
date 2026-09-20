@@ -1,0 +1,2 @@
+extends: eval_goatbench_place_route_only_qwen3vl_dashscope_train_r4.yaml
+exp_name: "exp_dev_goatbench_place_route_only_qwen3vl30b_dashscope_train_r5"

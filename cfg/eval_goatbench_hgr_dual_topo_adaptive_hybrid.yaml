@@ -1,0 +1,19 @@
+# Evidence-driven hybrid: deduplicated memory, bounded frontier intent and
+# selective verification for cross-goal instance-sensitive evidence.
+extends: eval_goatbench_hgr_dual_topo_memory_dedup.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_adaptive_hybrid
+navigation_backend: hgr_dual_topo_adaptive
+dual_dynamic_navigation:
+  stage: adaptive
+  preserve_hgr_stop: false
+  enable_revisit_deduplication: true
+  enable_revisit_cost_gate: false
+  enable_persistent_intent: true
+  enable_incremental_preemption: false
+  max_frontier_intent_motion_steps: 3
+  enable_terminal_verification: true
+  enable_selective_verification: true
+  selective_verification_goal_types:
+    - image
+    - description
+  historical_confirmation_views: 1

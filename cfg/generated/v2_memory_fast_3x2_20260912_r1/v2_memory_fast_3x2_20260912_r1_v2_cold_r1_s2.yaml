@@ -1,0 +1,9 @@
+extends: /home/hdd/tangyuxin/projects/Hypothesis_Graph_Refinement/cfg/eval_goatbench_hgr_dual_topo_v2_d_train.yaml
+exp_name: v2_memory_fast_3x2_20260912_r1_v2_cold_r1_s2
+episode_manifest: /home/hdd/tangyuxin/projects/Hypothesis_Graph_Refinement/cfg/manifests/goat_train_fast_3x2_seed77.json
+record_run_fingerprint: true
+controlled_memory:
+  mode: cold
+  directory: /home/hdd/tangyuxin/projects/Hypothesis_Graph_Refinement/results/hgr_v2_memory_checkpoints_fast_3x2_20260912_r1
+  preserve_hgr_memory: true
+  single_subtask: true

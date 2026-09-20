@@ -136,16 +136,9 @@ class Scene:
         self.cam_intrinsic = get_cam_intr(cfg.img_width, cfg.img_height, cfg.hfov)
 
         # about scene graph
-        self.objects: MapObjectDict[int, Dict] = (
-            MapObjectDict()
-        )  # object_id -> object item
-        self.object_id_counter = 1
-
-        self.snapshots: Dict[str, SnapShot] = {}  # image_path -> snapshot
-        self.frames: Dict[str, SnapShot] = {}  # image_path -> all frames
-        self.all_observations: Dict[str, np.ndarray] = (
-            {}
-        )  # image_path -> image, stores all actual observations at each step, used for querying vlm
+        # Construction and explicit resets must initialize the same identity
+        # state, including perception merge provenance.
+        self.clear_up_detections()
 
         self.clustering = SceneHierarchicalClustering(
             min_sample_split=0,
@@ -170,6 +163,8 @@ class Scene:
 
     def clear_up_detections(self):
         self.objects = MapObjectDict()
+        # Episode-local provenance from actual perception merges, never GT IDs.
+        self.object_id_aliases = {}
         self.object_id_counter = 1
 
         self.snapshots = {}
@@ -858,6 +853,7 @@ class Scene:
                 spatial_sim_type=self.cfg_cg["spatial_sim_type"],
                 device=self.device,
                 goal_obj_ids_mapping=goal_obj_ids_mapping,
+                object_id_aliases=self.object_id_aliases,
             )
 
         # update the object list in snapshots, since some objects may have been removed

@@ -1,0 +1,8 @@
+# Fast 3-scene validation of the final simplified V7 overlay.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_overlay_final_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  goal_conditioned_overlay:
+    enabled: true
+    goal_types: [object, description, image]

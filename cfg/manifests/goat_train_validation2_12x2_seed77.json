@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "dataset_dir": "data/goat_bench/train/content",
+  "seed": 77,
+  "legacy_selection": {
+    "start_ratio": 0.18,
+    "end_ratio": 0.27
+  },
+  "splits": {
+    "1": [
+      {"scene_file": "DsEJeNPcZtE.json", "scene_name": "DsEJeNPcZtE", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "v7DzfFFEpsD.json", "scene_name": "v7DzfFFEpsD", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "oPj9qMxrDEa.json", "scene_name": "oPj9qMxrDEa", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "XYyR54sxe6b.json", "scene_name": "XYyR54sxe6b", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "X6Pct1msZv5.json", "scene_name": "X6Pct1msZv5", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "DNWbUAJYsPy.json", "scene_name": "DNWbUAJYsPy", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "gmuS7Wgsbrx.json", "scene_name": "gmuS7Wgsbrx", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "HfMobPm86Xn.json", "scene_name": "HfMobPm86Xn", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "b3WpMbPFB6q.json", "scene_name": "b3WpMbPFB6q", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "741Fdj7NLF9.json", "scene_name": "741Fdj7NLF9", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "fRZhp6vWGw7.json", "scene_name": "fRZhp6vWGw7", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "5Kw4nGdqYtS.json", "scene_name": "5Kw4nGdqYtS", "episode_index": 0, "episode_id": "0"}
+    ],
+    "2": [
+      {"scene_file": "DsEJeNPcZtE.json", "scene_name": "DsEJeNPcZtE", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "v7DzfFFEpsD.json", "scene_name": "v7DzfFFEpsD", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "oPj9qMxrDEa.json", "scene_name": "oPj9qMxrDEa", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "XYyR54sxe6b.json", "scene_name": "XYyR54sxe6b", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "X6Pct1msZv5.json", "scene_name": "X6Pct1msZv5", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "DNWbUAJYsPy.json", "scene_name": "DNWbUAJYsPy", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "gmuS7Wgsbrx.json", "scene_name": "gmuS7Wgsbrx", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "HfMobPm86Xn.json", "scene_name": "HfMobPm86Xn", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "b3WpMbPFB6q.json", "scene_name": "b3WpMbPFB6q", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "741Fdj7NLF9.json", "scene_name": "741Fdj7NLF9", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "fRZhp6vWGw7.json", "scene_name": "fRZhp6vWGw7", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "5Kw4nGdqYtS.json", "scene_name": "5Kw4nGdqYtS", "episode_index": 1, "episode_id": "1"}
+    ]
+  }
+}

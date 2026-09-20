@@ -1,0 +1,4 @@
+# One-scene smoke for V7.1-D.  It inherits the same strict gate parameters.
+extends: eval_goatbench_goal_topomap_v7_1_d_commitment_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_d_commitment_strict_qwen3vl30b_dashscope_train_3x2_smoke"
+episode_manifest: "cfg/manifests/goat_train_smoke_1x1_seed77.json"

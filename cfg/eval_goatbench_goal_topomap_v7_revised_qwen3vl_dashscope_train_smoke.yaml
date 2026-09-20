@@ -1,0 +1,4 @@
+# One-episode smoke for the selected-action-bound V7 revisit gate.
+extends: eval_goatbench_goal_topomap_v7_revised_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_revised_selected_gate_qwen3vl30b_dashscope_train_smoke"
+episode_manifest: "cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json"

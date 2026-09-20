@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "dataset_dir": "data/goat_bench/train/content",
+  "seed": 77,
+  "legacy_selection": {
+    "start_ratio": 0.0,
+    "end_ratio": 0.01
+  },
+  "splits": {
+    "1": [
+      {
+        "scene_file": "ENiCjXWB6aQ.json",
+        "scene_name": "ENiCjXWB6aQ",
+        "episode_index": 0,
+        "episode_id": "0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+extends: eval_goatbench_phase_c_correctness_train.yaml
+exp_name: exp_dev_goatbench_route_guidance_train
+place_goal_navigation:
+  route_guidance: true

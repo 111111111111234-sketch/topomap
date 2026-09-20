@@ -8,11 +8,12 @@ import time
 from typing import Optional
 import logging
 from src.const import *
-
-
-client = OpenAI(
-    base_url=END_POINT,
-    api_key=OPENAI_KEY,
+from src.vlm_runtime import (
+    begin_vlm_call,
+    finish_vlm_call,
+    get_vlm_client,
+    get_vlm_runtime,
+    record_vlm_attempt,
 )
 
 
@@ -34,7 +35,10 @@ def format_content(contents):
 
 
 # send information to openai
-def call_openai_api(sys_prompt, contents) -> Optional[str]:
+def call_openai_api(
+    sys_prompt, contents, model_name: Optional[str] = None, extra_body=None,
+    purpose: str = "auxiliary",
+) -> Optional[str]:
     max_tries = 5
     retry_count = 0
     formated_content = format_content(contents)
@@ -42,10 +46,13 @@ def call_openai_api(sys_prompt, contents) -> Optional[str]:
         {"role": "system", "content": sys_prompt},
         {"role": "user", "content": formated_content},
     ]
+    started_at = begin_vlm_call(purpose)
     while retry_count < max_tries:
         try:
-            completion = client.chat.completions.create(
-                model="gpt-4o",  # model = "deployment_name"
+            record_vlm_attempt(purpose)
+            runtime = get_vlm_runtime()
+            request_kwargs = dict(
+                model=model_name or runtime["model"],
                 messages=message_text,
                 temperature=0.7,
                 max_tokens=4096,
@@ -53,7 +60,24 @@ def call_openai_api(sys_prompt, contents) -> Optional[str]:
                 frequency_penalty=0,
                 presence_penalty=0,
             )
-            return completion.choices[0].message.content
+            request_extra_body = extra_body if extra_body is not None else runtime["extra_body"]
+            if request_extra_body:
+                request_kwargs["extra_body"] = request_extra_body
+            completion = get_vlm_client().chat.completions.create(**request_kwargs)
+            message = completion.choices[0].message
+            if message.content:
+                finish_vlm_call(started_at, True, purpose)
+                return message.content
+            if runtime["reasoning_content_fallback"]:
+                model_extra = getattr(message, "model_extra", {}) or {}
+                for field in ("reasoning_content", "reasoning", "analysis", "text"):
+                    fallback = getattr(message, field, None) or model_extra.get(field)
+                    if isinstance(fallback, str) and fallback.strip():
+                        finish_vlm_call(started_at, True, purpose)
+                        return fallback
+            print("Error: VLM returned an empty completion")
+            retry_count += 1
+            continue
         except openai.RateLimitError as e:
             print("Rate limit error, waiting for 60s")
             time.sleep(30)
@@ -65,6 +89,7 @@ def call_openai_api(sys_prompt, contents) -> Optional[str]:
             retry_count += 1
             continue
 
+    finish_vlm_call(started_at, False, purpose)
     return None
 
 

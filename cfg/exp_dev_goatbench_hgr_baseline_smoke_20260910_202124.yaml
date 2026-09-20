@@ -1,0 +1,10 @@
+extends: eval_goatbench_hgr_baseline_qwen3vl_dashscope_train.yaml
+exp_name: exp_dev_goatbench_hgr_baseline_smoke_20260910_202124
+episode_manifest: cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json
+active_topology:
+  enabled: false
+hgr_topology_fusion:
+  enabled: false
+place_goal_navigation:
+  enabled: false
+  route_guidance: false

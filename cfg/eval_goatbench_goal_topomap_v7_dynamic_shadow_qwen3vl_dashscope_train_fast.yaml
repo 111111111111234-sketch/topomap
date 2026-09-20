@@ -1,0 +1,21 @@
+# True two-layer V7, shadow stage.  The persistent Scene Topology is projected
+# into a goal-local confidence graph, but C-strict receives untouched scores.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_dynamic_shadow_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dynamic_goal_topology:
+    enabled: true
+    shadow_only: true
+    goal_types: [object, description, image]
+    prior_strength: 4.0
+    positive_relevance: 0.60
+    coverage_radius_m: 1.0
+    negative_evidence_weight: 0.5
+    min_negative_views: 3
+    min_independent_step_gap: 2
+    min_independent_distance_voxels: 5.0
+    freshness_half_life_steps: 20
+    one_hop_discount: 0.25
+    propagation_edge_types:
+      [observed_at, anchored_to, depends_on, same_capture_anchor]

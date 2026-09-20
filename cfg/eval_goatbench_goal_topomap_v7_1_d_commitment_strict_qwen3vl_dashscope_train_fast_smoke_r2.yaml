@@ -1,0 +1,4 @@
+# Activation smoke: C-strict previously selected direct-first in ACZZ ep_0.
+extends: eval_goatbench_goal_topomap_v7_1_d_commitment_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_d_commitment_strict_qwen3vl30b_dashscope_train_3x2_smoke_r2"
+episode_manifest: "cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json"

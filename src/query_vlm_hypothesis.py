@@ -1,6 +1,7 @@
 """VLM query helpers for Hypothesis Graph Refinement."""
 
 import logging
+import numpy as np
 from typing import Dict, Optional, Tuple, Union
 
 from src.eval_utils_gpt_aeqa import explore_step
@@ -136,6 +137,28 @@ def query_vlm_for_response_with_hypothesis_refinement(
     return pred_target_frontier, reason, n_filtered_snapshots, hypothesis_info
 
 
+def verify_fresh_intent_arrival(frontier, scene, tsdf_planner, semantic_critic, pts, angle):
+    """Verify at the executed terminal; unavailable evidence never falsifies."""
+    try:
+        obs, _ = scene.get_observation(pts, angle=angle)
+        rgb = np.asarray(obs["color_sensor"])[..., :3]
+        depth = obs["depth_sensor"]
+        results = scene.detection_model.predict(rgb, conf=0.1, verbose=False)
+        classes = scene.obj_classes.get_classes_arr()
+        ids = results[0].boxes.cls.cpu().numpy().astype(int)
+        names = [classes[i] for i in ids]
+    except Exception as exc:
+        return {"skipped": True, "reason": "arrival_observation_failed", "error_type": type(exc).__name__}
+    if not names:
+        return {"skipped": True, "reason": "insufficient_arrival_evidence"}
+    result = verify_hypothesis_node_arrival(
+        frontier, scene, tsdf_planner, semantic_critic, rgb, depth, names,
+        apply_graph_update=True)
+    result.update(observation_pose=np.asarray(pts).tolist(), observation_angle=float(angle),
+                  observation_source="post_motion_terminal", detected_objects=names)
+    return result
+
+
 def verify_hypothesis_node_arrival(
     frontier: Frontier,
     scene: Scene,
@@ -144,6 +167,7 @@ def verify_hypothesis_node_arrival(
     actual_rgb,
     actual_depth,
     detected_objects: list,
+    apply_graph_update: bool = True,
 ) -> Dict:
     if (
         not hasattr(frontier, "hypothesis_node_id")
@@ -164,7 +188,12 @@ def verify_hypothesis_node_arrival(
         return {"skipped": True, "reason": "Hypothesis node not found"}
 
     hypothesis_node = hypothesis_graph.nodes[hypothesis_node_id]
+    from hashlib import sha256
     actual_observation = {
+        "observation_id": ("arrival:" + sha256(np.asarray(actual_rgb).tobytes()).hexdigest()
+                           if actual_rgb is not None else None),
+        "independent_support": actual_rgb is not None,
+        "evidence_source": "post_motion_terminal",
         "rgb_image": actual_rgb,
         "depth": actual_depth,
         "detected_objects": detected_objects,
@@ -178,6 +207,7 @@ def verify_hypothesis_node_arrival(
         hypothesis_node=hypothesis_node,
         actual_observation=actual_observation,
         scene_objects=scene.objects,
+        apply_graph_update=apply_graph_update,
     )
 
     phase_label = "FALSIFIED" if verification_report.is_falsified else "VERIFIED"

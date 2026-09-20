@@ -1,0 +1,10 @@
+# M4 ablation: add terminal verification to the retained Intent candidate.
+extends: eval_goatbench_hgr_dual_topo_intent_persistent.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_verified_ablation
+navigation_backend: hgr_dual_topo_verified
+dual_dynamic_navigation:
+  stage: verified
+  preserve_hgr_stop: false
+  enable_incremental_preemption: false
+  enable_terminal_verification: true
+  historical_confirmation_views: 2

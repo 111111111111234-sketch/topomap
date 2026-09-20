@@ -42,6 +42,17 @@ Unlike additive map-building, this allows the graph to *contract* by pruning err
 
 ## Installation
 
+Current HGR dual-topology rebuild: see the [development specification](docs/HGR_HYPOTHESIS_AWARE_DUAL_TOPO_DEVELOPMENT.md)
+for module ownership, staged implementation, and acceptance criteria. The first memory/intent/verification implementation
+is integrated and tested offline; online acceptance remains pending. See the [implementation report and manual commands](docs/HGR_DUAL_TOPO_STAGED_IMPLEMENTATION.md).
+
+Earlier dual-topology development: see the [general design specification](docs/HGR_DUAL_TOPO_GENERAL_DEVELOPMENT_SPEC.md),
+[continuous route guidance design](docs/HGR_TOPO_GUIDED_CONTINUOUS_DESIGN.md), and
+[three completed Phase C smoke reviews](docs/HGR_PHASE_C_THREE_SMOKES_REVIEW.md).
+These are experimental extensions: the completed Phase C smokes have not established a quality improvement,
+and the new [certified route guidance implementation](docs/HGR_ROUTE_GUIDANCE_IMPLEMENTATION.md)
+still awaits online validation.
+
 Set up the conda environment (Linux, Python 3.9):
 
 ```bash
@@ -119,6 +130,12 @@ The default evaluation config saves visualization results including topdown maps
     ├── query_vlm_goatbench.py      # VLM query wrapper for GOAT-Bench
     └── conceptgraph/               # ConceptGraph scene graph construction
 ```
+
+## Extension Design
+
+- [V2-A→D development and user-run validation](docs/HGR_DUAL_TOPO_V2_BCD_IMPLEMENTATION.md): shared certified routes, goal-state retraction, dependency-aware path caching, and controlled memory experiments. New code is untested pending user-run checks; no performance improvement is claimed.
+
+- [HGR-ActiveTopo modification plan](docs/HGR_CONFTOPO_MODIFICATION_PLAN.md): a staged design for introducing persistent, task-conditioned confidence topology into HGR while preserving the original HGR baseline.
 
 ## Acknowledgement
 

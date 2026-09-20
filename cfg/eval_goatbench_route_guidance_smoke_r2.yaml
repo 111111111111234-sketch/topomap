@@ -1,0 +1,2 @@
+extends: eval_goatbench_route_guidance_smoke.yaml
+exp_name: exp_dev_goatbench_route_guidance_smoke_r2

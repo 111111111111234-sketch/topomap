@@ -39,6 +39,7 @@ class SemanticCritic:
             "total_verifications": 0,
             "successful_verifications": 0,
             "falsifications": 0,
+            "feature_residual_errors": 0,
             "hallucination_types": {},
         }
 
@@ -51,6 +52,7 @@ class SemanticCritic:
         hypothesis_node: HypothesisNode,
         actual_observation: Dict,
         scene_objects: Dict,
+        apply_graph_update: bool = True,
     ) -> FalsificationReport:
         del scene_objects
         self.stats["total_verifications"] += 1
@@ -81,14 +83,10 @@ class SemanticCritic:
             cascade_deleted_nodes = self._get_cascade_deleted_node_ids(
                 hypothesis_node.node_id
             )
-            self.hypothesis_graph.nodes[hypothesis_node.node_id].mark_falsified(
-                reason=textual_explanation,
-                residual=semantic_residual,
-            )
-            self.hypothesis_graph.hypothesis_nodes.discard(hypothesis_node.node_id)
-            self.hypothesis_graph.falsified_nodes.add(hypothesis_node.node_id)
-            self.hypothesis_graph.stats["hypothesis_nodes_falsified"] += 1
-            self.hypothesis_graph.cascade_delete(hypothesis_node.node_id)
+            if apply_graph_update:
+                self._apply_falsification(
+                    hypothesis_node, textual_explanation, semantic_residual
+                )
             self.stats["falsifications"] += 1
 
             print(
@@ -105,13 +103,14 @@ class SemanticCritic:
             predicted_class = hypothesis_node.semantic_dist.categories[
                 np.argmax(hypothesis_node.semantic_dist.probabilities)
             ]
-            hypothesis_node.upgrade_to_observed(
-                observed_class=predicted_class,
-                confidence=1.0 - semantic_residual,
-            )
-            self.hypothesis_graph.hypothesis_nodes.discard(hypothesis_node.node_id)
-            self.hypothesis_graph.observed_nodes.add(hypothesis_node.node_id)
-            self.hypothesis_graph.stats["hypothesis_nodes_verified"] += 1
+            if apply_graph_update:
+                self._apply_verification(
+                    hypothesis_node, predicted_class, semantic_residual
+                )
+                observation_id = actual_observation.get("observation_id")
+                if (observation_id and actual_observation.get("independent_support", False)
+                        and observation_id not in hypothesis_node.independent_observation_refs):
+                    hypothesis_node.independent_observation_refs.append(observation_id)
             self.stats["successful_verifications"] += 1
             textual_explanation = f"Verified as {predicted_class}"
 
@@ -134,10 +133,37 @@ class SemanticCritic:
             confidence=abs(semantic_residual - self.semantic_residual_threshold),
         )
 
+    def _apply_falsification(
+        self, hypothesis_node: HypothesisNode, explanation: str, residual: float
+    ) -> None:
+        """Apply the legacy hard graph mutation after evidence evaluation."""
+        if hypothesis_node.node_id not in self.hypothesis_graph.nodes:
+            return
+        self.hypothesis_graph.nodes[hypothesis_node.node_id].mark_falsified(
+            reason=explanation, residual=residual
+        )
+        self.hypothesis_graph.hypothesis_nodes.discard(hypothesis_node.node_id)
+        self.hypothesis_graph.falsified_nodes.add(hypothesis_node.node_id)
+        self.hypothesis_graph.stats["hypothesis_nodes_falsified"] += 1
+        self.hypothesis_graph.cascade_delete(hypothesis_node.node_id)
+
+    def _apply_verification(
+        self, hypothesis_node: HypothesisNode, predicted_class: str, residual: float
+    ) -> None:
+        """Apply the legacy positive verification mutation."""
+        if hypothesis_node.node_id not in self.hypothesis_graph.nodes:
+            return
+        hypothesis_node.upgrade_to_observed(
+            observed_class=predicted_class, confidence=1.0 - residual
+        )
+        self.hypothesis_graph.hypothesis_nodes.discard(hypothesis_node.node_id)
+        self.hypothesis_graph.observed_nodes.add(hypothesis_node.node_id)
+        self.hypothesis_graph.stats["hypothesis_nodes_verified"] += 1
+
     def _compute_semantic_residual(
         self, hypothesis_node: HypothesisNode, actual_observation: Dict
     ) -> float:
-        if "semantic_class" in actual_observation:
+        if actual_observation.get("semantic_class") is not None:
             actual_class = actual_observation["semantic_class"]
             expected_prob = hypothesis_node.semantic_dist.get_expected_semantic_score(
                 actual_class
@@ -176,16 +202,69 @@ class SemanticCritic:
 
             actual_pil = Image.fromarray(actual_image)
             actual_tensor = self.clip_preprocess(actual_pil).unsqueeze(0)
+            try:
+                model_tensor = next(self.clip_model.parameters())
+            except (AttributeError, StopIteration):
+                try:
+                    model_tensor = next(self.clip_model.buffers())
+                except (AttributeError, StopIteration):
+                    model_tensor = None
+            if model_tensor is not None:
+                actual_tensor = actual_tensor.to(
+                    device=model_tensor.device, dtype=model_tensor.dtype
+                )
             with torch.no_grad():
                 actual_feature = self.clip_model.encode_image(actual_tensor)
                 actual_feature = F.normalize(actual_feature, dim=-1)
 
-            expected_feature_norm = F.normalize(expected_feature.unsqueeze(0), dim=-1)
+            expected_cpu = (expected_feature.detach().cpu().numpy()
+                            if torch.is_tensor(expected_feature)
+                            else np.asarray(expected_feature))
+            if expected_cpu.size == actual_feature.shape[-1]:
+                expected_tensor = torch.as_tensor(
+                    expected_cpu, device=actual_feature.device,
+                    dtype=actual_feature.dtype,
+                ).reshape(1, -1)
+                expected_feature_norm = F.normalize(expected_tensor, dim=-1)
+            else:
+                # Frontier.feature in the original HGR stores its RGB crop,
+                # while some checkpoints store an already encoded CLIP vector.
+                # Encode image-shaped historical evidence before comparing it
+                # with the current CLIP embedding.
+                expected_image = np.asarray(expected_cpu)
+                if expected_image.ndim == 4 and expected_image.shape[0] == 1:
+                    expected_image = expected_image[0]
+                if (expected_image.ndim == 3 and expected_image.shape[0] in (1, 3, 4)
+                        and expected_image.shape[-1] not in (1, 3, 4)):
+                    expected_image = np.moveaxis(expected_image, 0, -1)
+                if expected_image.ndim != 3 or expected_image.shape[-1] not in (1, 3, 4):
+                    raise ValueError(
+                        "expected evidence is neither a CLIP vector nor an RGB image: "
+                        f"shape={expected_image.shape}"
+                    )
+                if expected_image.shape[-1] == 1:
+                    expected_image = np.repeat(expected_image, 3, axis=-1)
+                if expected_image.shape[-1] == 4:
+                    expected_image = expected_image[..., :3]
+                if not np.issubdtype(expected_image.dtype, np.uint8):
+                    expected_image = np.nan_to_num(expected_image)
+                    if expected_image.size and float(expected_image.max()) <= 1.0:
+                        expected_image = expected_image * 255.0
+                    expected_image = np.clip(expected_image, 0, 255).astype(np.uint8)
+                expected_pil = Image.fromarray(expected_image)
+                expected_input = self.clip_preprocess(expected_pil).unsqueeze(0).to(
+                    device=actual_feature.device, dtype=actual_tensor.dtype
+                )
+                with torch.no_grad():
+                    expected_feature_norm = F.normalize(
+                        self.clip_model.encode_image(expected_input), dim=-1
+                    )
             similarity = F.cosine_similarity(
                 expected_feature_norm, actual_feature, dim=-1
             )
             return 1.0 - float(similarity.item())
         except Exception as exc:
+            self.stats["feature_residual_errors"] += 1
             print(f"[Semantic Critic] Error computing feature residual: {exc}")
             return 0.5
 
@@ -274,7 +353,9 @@ Explain the most likely physical or perceptual cause of the mismatch."""
             if expected_img_base64 is not None:
                 contents.append(("Predicted frontier evidence", expected_img_base64))
 
-            response = call_openai_api(sys_prompt, contents)
+            response = call_openai_api(
+                sys_prompt, contents, purpose="semantic_critic"
+            )
             if response is None:
                 return fallback_cause, fallback_explanation
 
@@ -294,6 +375,8 @@ Explain the most likely physical or perceptual cause of the mismatch."""
             return fallback_cause, fallback_explanation
 
     def _get_cascade_deleted_node_ids(self, node_id: str) -> List[str]:
+        if getattr(self.hypothesis_graph, "preserve_independent_evidence", False):
+            return self.hypothesis_graph.cascade_affected_ids(node_id)
         deleted_nodes = []
         visited = set()
         queue = [node_id]

@@ -1,0 +1,6 @@
+# Clean HGR target selection and execution on the fixed Phase-B development set.
+extends: eval_goatbench_qwen3vl_dashscope.yaml
+exp_name: "exp_dev_goatbench_hgr_baseline_qwen3vl30b_dashscope_train"
+scene_dataset_config_path: "data/hm3d_annotated_train_local.scene_dataset_config.json"
+test_data_dir: "data/goat_bench/train/content/"
+episode_manifest: "cfg/manifests/goat_train_dev_12x2_seed77.json"

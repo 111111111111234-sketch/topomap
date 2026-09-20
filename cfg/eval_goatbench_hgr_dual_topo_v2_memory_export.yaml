@@ -1,0 +1,10 @@
+extends: eval_goatbench_place_route_only_qwen3vl_dashscope_train.yaml
+exp_name: exp_dev_goatbench_hgr_v2_memory_export
+record_run_fingerprint: true
+active_topology:
+  place_topology:
+    stage: shadow
+controlled_memory:
+  mode: export
+  directory: results/hgr_v2_memory_checkpoints
+  prefix_subtasks: 1

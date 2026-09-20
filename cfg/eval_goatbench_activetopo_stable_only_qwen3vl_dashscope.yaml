@@ -1,0 +1,6 @@
+# Behavior-neutral stable-topology ablation. All unspecified settings inherit
+# the frozen v4 Qwen3-VL/DashScope development configuration.
+extends: eval_goatbench_activetopo_qwen3vl_dashscope_dev10.yaml
+exp_name: "exp_eval_goatbench_activetopo_ablation_stable_only_qwen3vl30b_dashscope"
+active_topology:
+  mode: stable_only

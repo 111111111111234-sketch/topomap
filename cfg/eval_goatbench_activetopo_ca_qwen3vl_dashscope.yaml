@@ -1,0 +1,6 @@
+# Stable topology + confidence/accessibility ablation; goal relevance is not
+# computed or shown to the VLM.
+extends: eval_goatbench_activetopo_qwen3vl_dashscope_dev10.yaml
+exp_name: "exp_eval_goatbench_activetopo_ablation_ca_qwen3vl30b_dashscope"
+active_topology:
+  mode: confidence_accessibility

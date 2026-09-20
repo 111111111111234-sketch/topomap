@@ -1,0 +1,2 @@
+extends: eval_goatbench_phase_c_correctness_smoke.yaml
+exp_name: exp_dev_goatbench_phase_c_semantic_reactivation_20260910_194857

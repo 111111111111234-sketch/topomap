@@ -1,0 +1,8 @@
+# Persistent global topology + per-subtask connected goal-conditioned view.
+# HGR perception, snapshots, VLM, navigation and success semantics are unchanged.
+extends: eval_goatbench_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_goal_topomap_route_v3_qwen3vl30b_dashscope"
+
+active_topology:
+  enabled: true
+  mode: goal_topo_map

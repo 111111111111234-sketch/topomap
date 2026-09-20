@@ -679,6 +679,7 @@ def merge_overlap_objects(
     spatial_sim_type: str,
     device: str,
     goal_obj_ids_mapping: tp.Dict[int, tp.List[int]] = None,
+    object_id_aliases: dict = None,
 ):
     x, y = overlap_matrix.nonzero()
     overlap_ratio = overlap_matrix[x, y]
@@ -734,6 +735,8 @@ def merge_overlap_objects(
                     )
                     # Remove object i from the list of objects
                     objects.pop(obj_i)
+                    if object_id_aliases is not None:
+                        object_id_aliases[obj_i] = obj_j
 
                     # Update the goal_obj_ids_mapping if it exists
                     if goal_obj_ids_mapping is not None:
@@ -836,6 +839,7 @@ def merge_objects(
     spatial_sim_type: str,
     device: str,
     goal_obj_ids_mapping: dict = None,
+    object_id_aliases: dict = None,
 ):
     if len(objects) == 0:
         return objects
@@ -864,6 +868,7 @@ def merge_objects(
         spatial_sim_type=spatial_sim_type,
         device=device,
         goal_obj_ids_mapping=goal_obj_ids_mapping,
+        object_id_aliases=object_id_aliases,
     )
     print("After merging:", len(objects))
 

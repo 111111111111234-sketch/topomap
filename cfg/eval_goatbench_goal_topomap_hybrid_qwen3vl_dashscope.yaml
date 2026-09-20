@@ -1,0 +1,9 @@
+# Route v6: Unified Topo controls object and description goals. Image goals use
+# the goal-conditioned topology projection to organize executable frontiers,
+# while retaining original HGR snapshot selection/navigation and disabling
+# historical snapshot routes and route commitments.
+extends: eval_goatbench_goal_topomap_unified_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_goal_topomap_route_v6_hybrid_qwen3vl30b_dashscope"
+
+active_topology:
+  projection_only_goal_types: [image]

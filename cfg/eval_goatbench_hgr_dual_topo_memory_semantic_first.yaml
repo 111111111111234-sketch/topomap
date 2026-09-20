@@ -1,0 +1,12 @@
+# M1/M3 control: original HGR candidate presentation, then source-bound known-space authorization.
+extends: eval_goatbench_hgr_dual_topo_memory.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_memory_semantic_first
+dual_dynamic_navigation:
+  semantic_selection_mode: original_hgr
+  enable_candidate_annotations: false
+  enable_revisit_deduplication: false
+  enable_revisit_cost_gate: false
+  enable_persistent_intent: false
+  enable_incremental_preemption: false
+  enable_terminal_verification: false
+  enable_unscored_frontier_fallback: false

@@ -1,0 +1,5 @@
+extends: eval_goatbench_hgr_dual_topo_memory.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_intent_smoke_r1
+navigation_backend: hgr_dual_topo_intent
+dual_dynamic_navigation:
+  stage: intent

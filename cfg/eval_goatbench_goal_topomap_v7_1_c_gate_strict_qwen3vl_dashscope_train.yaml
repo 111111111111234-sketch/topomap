@@ -1,0 +1,5 @@
+# Frozen V7 endpoint: C-strict on the full fixed 12-scene train-dev manifest.
+# This only changes the evaluation scale from the 3x2 fast selector.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl30b_dashscope_train"
+episode_manifest: "cfg/manifests/goat_train_dev_12x2_seed77.json"

@@ -5,3 +5,18 @@ __pycache__/
 results/
 wandb/
 *.log
+
+# Downloaded datasets, pretrained weights, and generated experiment outputs
+# are intentionally kept out of source control.
+artifacts/
+data/goat-bench.zip
+data/goat_bench/train/
+data/goat_bench/val_seen/
+data/goat_bench/val_seen_synonyms/
+data/hm3d/
+data/scene_datasets/
+data/versioned_data/
+data/train
+data/val
+data/*.tar
+*.pt

@@ -1,0 +1,7 @@
+# P2-A: original HGR choices/stopping, known-grid movement without topo routing.
+extends: eval_goatbench_dual_dynamic_shadow.yaml
+exp_name: exp_dev_goatbench_dual_dynamic_known_space_smoke_r1
+navigation_backend: dual_dynamic_known_space
+dual_dynamic_navigation:
+  stage: known_space
+  object_approach: false

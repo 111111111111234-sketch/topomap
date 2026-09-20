@@ -1,0 +1,5 @@
+extends: eval_goatbench_place_goal_phase_c_r3_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_place_goal_phase_c_r4_qwen3vl30b_dashscope_train"
+place_goal_navigation:
+  topological_actions: true
+  event_driven_selection: true

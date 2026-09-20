@@ -1,0 +1,11 @@
+extends: eval_goatbench_hgr_dual_topo_v2_a_train.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_b
+record_run_fingerprint: true
+hgr_dual_topo:
+  enabled: true
+  goal_state: false
+  goal_context: false
+  cascade_correction: false
+  persistent_intent: false
+  cache_paths: false
+  record_decisions: false

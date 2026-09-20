@@ -1,0 +1,4 @@
+# V7.0 changes diagnostics and evaluation bookkeeping only. Navigation behavior
+# is inherited unchanged from the frozen V6 hybrid train configuration.
+extends: eval_goatbench_goal_topomap_hybrid_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_0_diagnostics_qwen3vl30b_dashscope_train"

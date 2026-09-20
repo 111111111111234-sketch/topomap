@@ -1,0 +1,4 @@
+# Frozen final V7 on held-out GOAT train scenes. Do not tune after running.
+extends: eval_goatbench_goal_topomap_v7_final_qwen3vl_dashscope_train.yaml
+exp_name: "exp_internal_val_goatbench_goal_topomap_v7_overlay_final_qwen3vl30b_dashscope_12x2"
+episode_manifest: "cfg/manifests/goat_train_internal_val_12x2_seed77.json"

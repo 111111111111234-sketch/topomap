@@ -1,0 +1,10 @@
+# V7.1-C gate ablation: pre-declared strict profile on the fixed 3x2 dev set.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  revisit_gate:
+    selected_profile: strict
+    min_relevance_margin: 0.10
+    max_budget_fraction: 0.15
+    max_revisit_to_explore_ratio: 1.00

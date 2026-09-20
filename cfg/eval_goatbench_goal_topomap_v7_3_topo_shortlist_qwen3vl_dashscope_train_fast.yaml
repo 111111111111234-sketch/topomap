@@ -1,0 +1,10 @@
+# V7.3: topology decides a primary Frontier and one topology-ranked fallback;
+# Qwen chooses the local Frontier only within that general, goal-conditioned
+# shortlist. The chosen Frontier then uses the V7.2-B geometric commitment.
+extends: eval_goatbench_goal_topomap_v7_2b_geometric_rebind_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_3_topo_shortlist_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dual_layer_planner:
+    explore_shortlist:
+      enabled: true

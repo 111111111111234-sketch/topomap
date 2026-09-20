@@ -1,0 +1,3 @@
+extends: ../eval_goatbench_hgr_dual_topo_v2_c_persistent_smoke.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_v2_c_persistent_smoke_20260912_180035
+output_parent_dir: results

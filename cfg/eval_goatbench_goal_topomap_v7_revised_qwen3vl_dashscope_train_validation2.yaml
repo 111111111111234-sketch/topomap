@@ -1,0 +1,4 @@
+# Frozen revised-V7 evaluation on a second unseen GOAT-train validation set.
+extends: eval_goatbench_goal_topomap_v7_revised_qwen3vl_dashscope_train.yaml
+exp_name: "exp_validation2_goatbench_goal_topomap_v7_revised_selected_gate_qwen3vl30b_dashscope_12x2"
+episode_manifest: "cfg/manifests/goat_train_validation2_12x2_seed77.json"

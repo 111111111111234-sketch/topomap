@@ -1,0 +1,4 @@
+# GOAT-Bench official val_seen split using the hybrid goal-topomap policy.
+extends: eval_goatbench_goal_topomap_hybrid_qwen3vl_dashscope.yaml
+exp_name: "exp_eval_goatbench_goal_topomap_route_v6_hybrid_qwen3vl30b_dashscope_val_seen"
+test_data_dir: "data/goat_bench/val_seen/content/"

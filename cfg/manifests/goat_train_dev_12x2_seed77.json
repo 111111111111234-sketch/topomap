@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "dataset_dir": "data/goat_bench/train/content",
+  "seed": 77,
+  "legacy_selection": {
+    "start_ratio": 0.0,
+    "end_ratio": 0.09
+  },
+  "splits": {
+    "1": [
+      {"scene_file": "ENiCjXWB6aQ.json", "scene_name": "ENiCjXWB6aQ", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "E1NrAhMoqvB.json", "scene_name": "E1NrAhMoqvB", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "ACZZiU6BXLz.json", "scene_name": "ACZZiU6BXLz", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "8B43pG641ff.json", "scene_name": "8B43pG641ff", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "ooq3SnvC79d.json", "scene_name": "ooq3SnvC79d", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "pcpn6mFqFCg.json", "scene_name": "pcpn6mFqFCg", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "PPTLa8SkUfo.json", "scene_name": "PPTLa8SkUfo", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "h6nwVLpAKQz.json", "scene_name": "h6nwVLpAKQz", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "fK2vEV32Lag.json", "scene_name": "fK2vEV32Lag", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "MVVzj944atG.json", "scene_name": "MVVzj944atG", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "YHmAkqgwe2p.json", "scene_name": "YHmAkqgwe2p", "episode_index": 0, "episode_id": "0"},
+      {"scene_file": "dQrLTxHvLXU.json", "scene_name": "dQrLTxHvLXU", "episode_index": 0, "episode_id": "0"}
+    ],
+    "2": [
+      {"scene_file": "ENiCjXWB6aQ.json", "scene_name": "ENiCjXWB6aQ", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "E1NrAhMoqvB.json", "scene_name": "E1NrAhMoqvB", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "ACZZiU6BXLz.json", "scene_name": "ACZZiU6BXLz", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "8B43pG641ff.json", "scene_name": "8B43pG641ff", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "ooq3SnvC79d.json", "scene_name": "ooq3SnvC79d", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "pcpn6mFqFCg.json", "scene_name": "pcpn6mFqFCg", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "PPTLa8SkUfo.json", "scene_name": "PPTLa8SkUfo", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "h6nwVLpAKQz.json", "scene_name": "h6nwVLpAKQz", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "fK2vEV32Lag.json", "scene_name": "fK2vEV32Lag", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "MVVzj944atG.json", "scene_name": "MVVzj944atG", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "YHmAkqgwe2p.json", "scene_name": "YHmAkqgwe2p", "episode_index": 1, "episode_id": "1"},
+      {"scene_file": "dQrLTxHvLXU.json", "scene_name": "dQrLTxHvLXU", "episode_index": 1, "episode_id": "1"}
+    ]
+  }
+}

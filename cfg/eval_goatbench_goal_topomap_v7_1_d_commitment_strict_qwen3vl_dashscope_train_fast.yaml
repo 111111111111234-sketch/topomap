@@ -1,0 +1,14 @@
+# V7.1-D: V7.1-C strict plus unified short-horizon target commitment.
+extends: eval_goatbench_goal_topomap_v7_1_c_gate_strict_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_1_d_commitment_strict_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  target_commitment:
+    enabled: true
+    switch_relevance_margin: 0.10
+    tie_margin: 0.10
+    min_switch_saving_m: 1.0
+    min_switch_saving_ratio: 0.25
+    min_progress_m: 0.20
+    max_no_progress_segments: 2
+    preempt_on_live_object: true

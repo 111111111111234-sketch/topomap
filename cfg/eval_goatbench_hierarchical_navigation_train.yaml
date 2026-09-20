@@ -1,0 +1,18 @@
+# Unified semantic -> task -> route -> verification controller.
+extends: eval_goatbench_hgr_dual_topo_v2_d_train.yaml
+exp_name: exp_dev_goatbench_hierarchical_navigation
+record_run_fingerprint: true
+
+# The unified controller composes the V2 geometry implementation internally;
+# this legacy behavior switch must remain off.
+hgr_dual_topo:
+  enabled: false
+
+hierarchical_navigation:
+  enabled: true
+  shadow_only: false
+  cache_paths: true
+  record_decisions: false
+  semantic_parse_attempts: 2
+  max_verification_attempts: 2
+  verification_min_confidence: 0.70

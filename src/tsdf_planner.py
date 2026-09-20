@@ -125,6 +125,7 @@ class TSDFPlanner(TSDFPlannerBase):
         self.target_point: [np.ndarray] = (
             None  # the corresponding navigable location of max_point. The agent goes to this point to observe the max_point
         )
+        self.look_at_point: Optional[np.ndarray] = None
 
         self.frontiers: List[Frontier] = []
 
@@ -170,6 +171,8 @@ class TSDFPlanner(TSDFPlannerBase):
         save_frontier_image: bool = False,
         eps_frontier_dir=None,
         prompt_img_size: Tuple[int, int] = (320, 320),
+        defer_hypothesis_prediction: bool = False,
+        preserve_hypothesis_node_ids=None,
     ) -> bool:
         pts_habitat = pts.copy()
         pts = pos_habitat_to_normal(pts)
@@ -461,8 +464,12 @@ class TSDFPlanner(TSDFPlannerBase):
                 frontier.feature = processed_rgb
 
         # Phase I: Hypothesis Graph Refinement - Predict semantic distribution for Hypothesis Nodes
-        if self.enable_hypothesis_refinement:
-            self._predict_hypothesis_node_semantics(scene, pts_habitat)
+        if self.enable_hypothesis_refinement and not defer_hypothesis_prediction:
+            self._predict_hypothesis_node_semantics(
+                scene,
+                pts_habitat,
+                preserve_node_ids=preserve_hypothesis_node_ids,
+            )
 
         return True
 
@@ -475,6 +482,9 @@ class TSDFPlanner(TSDFPlannerBase):
         pathfinder,
         random_position=False,
         observe_snapshot=True,
+        target_point_override=None,
+        look_at_point=None,
+        known_space_only=False,
     ) -> bool:
         if self.max_point is not None or self.target_point is not None:
             # if the next point is already set
@@ -485,6 +495,31 @@ class TSDFPlanner(TSDFPlannerBase):
         pts = pos_habitat_to_normal(pts)
         cur_point = self.normal2voxel(pts)
         self.max_point = choice
+        observation_mask = (self.island & self.unoccupied & ~self.occupied
+                            if known_space_only else self.unoccupied)
+
+        if target_point_override is not None:
+            target_point_override = np.rint(
+                np.asarray(target_point_override, dtype=float)[:2]
+            ).astype(int)
+            if (
+                not self.check_within_bnds(target_point_override)
+                or self.occupied[tuple(target_point_override)]
+                or not self.unoccupied[tuple(target_point_override)]
+                or not self.island[tuple(target_point_override)]
+            ):
+                logging.error(
+                    "Error in set_next_navigation_point: invalid target_point_override %s",
+                    target_point_override,
+                )
+                self.max_point = None
+                return False
+            self.target_point = target_point_override
+            self.look_at_point = (
+                None if look_at_point is None
+                else np.asarray(look_at_point, dtype=float)[:2]
+            )
+            return True
 
         if type(choice) == SnapShot:
             obj_centers = [objects[obj_id]["bbox"].center for obj_id in choice.cluster]
@@ -515,18 +550,21 @@ class TSDFPlanner(TSDFPlannerBase):
                     # the target navigation point is deterministic
                     target_navigable_point = get_proper_observe_point(
                         target_point,
-                        self.unoccupied,
+                        observation_mask,
                         cur_point=cur_point,
                         dist=cfg.final_observe_distance / self._voxel_size,
                     )
                 else:
                     target_navigable_point = get_random_observe_point(
                         target_point,
-                        self.unoccupied,
+                        observation_mask,
                         min_dist=cfg.final_observe_distance / self._voxel_size,
                         max_dist=(cfg.final_observe_distance + 1.5) / self._voxel_size,
                     )
                 if target_navigable_point is None:
+                    if known_space_only:
+                        self.max_point = self.target_point = self.look_at_point = None
+                        return False
                     # this is usually because the target object is too far, so its surroundings are not detected as unoccupied
                     # so we just temporarily use pathfinder to find a navigable point around it
                     target_point_normal = (
@@ -556,7 +594,7 @@ class TSDFPlanner(TSDFPlannerBase):
                     target_point = get_proper_snapshot_observation_point(
                         obj_centers=obj_centers,
                         snapshot_observation_point=choice.obs_point,
-                        unoccupied_map=self.unoccupied,
+                        unoccupied_map=observation_mask,
                         min_obs_dist=cfg.final_observe_distance / self._voxel_size - 1,
                         max_obs_dist=cfg.final_observe_distance / self._voxel_size + 1,
                     )
@@ -564,7 +602,7 @@ class TSDFPlanner(TSDFPlannerBase):
                     target_point = get_random_snapshot_observation_point(
                         obj_centers=obj_centers,
                         snapshot_observation_point=choice.obs_point,
-                        unoccupied_map=self.unoccupied,
+                        unoccupied_map=observation_mask,
                         min_obs_dist=cfg.final_observe_distance / self._voxel_size - 1,
                         max_obs_dist=cfg.final_observe_distance / self._voxel_size + 1,
                     )
@@ -572,6 +610,8 @@ class TSDFPlanner(TSDFPlannerBase):
                     logging.error(
                         f"Error in set_next_navigation_point: cannot find a proper observation point for the snapshot"
                     )
+                    if known_space_only:
+                        self.max_point = self.target_point = self.look_at_point = None
                     return False
 
                 self.target_point = target_point
@@ -587,6 +627,7 @@ class TSDFPlanner(TSDFPlannerBase):
                 not self.check_within_bnds(next_point.astype(int))
                 or self.occupied[int(next_point[0]), int(next_point[1])]
                 or not self.island[int(next_point[0]), int(next_point[1])]
+                or (known_space_only and not self.unoccupied[int(next_point[0]), int(next_point[1])])
             ):
                 next_point -= ft_direction
                 try_count += 1
@@ -614,6 +655,7 @@ class TSDFPlanner(TSDFPlannerBase):
         cfg,
         path_points=None,
         save_visualization=True,
+        route_guidance=None,
     ):
         if self.max_point is None or self.target_point is None:
             logging.error(
@@ -630,11 +672,21 @@ class TSDFPlanner(TSDFPlannerBase):
             if type(self.max_point) == Frontier
             else cfg.max_dist_from_cur_phase_2
         )  # in phase 2, the step size should be smaller
-        dist, path_to_target = self.get_distance(
-            cur_point[:2], self.target_point, height=pts[2], pathfinder=pathfinder
-        )
+        if route_guidance is not None:
+            movement = route_guidance.step(cur_point[:2], max_dist_from_cur,
+                                           self._voxel_size, self.island & ~self.occupied)
+            if movement is None:
+                return (None,)
+            next_point, target_arrived = movement
+            dist, path_to_target = 0., None
+        else:
+            dist, path_to_target = self.get_distance(
+                cur_point[:2], self.target_point, height=pts[2], pathfinder=pathfinder
+            )
 
-        if dist > max_dist_from_cur:
+        if route_guidance is not None:
+            pass  # The certified movement already set position and terminal arrival.
+        elif dist > max_dist_from_cur:
             target_arrived = False
             if path_to_target is not None:
                 # drop the y value of the path to avoid errors when calculating seg_length
@@ -701,7 +753,7 @@ class TSDFPlanner(TSDFPlannerBase):
             next_point = self.target_point.copy()
 
         next_point_old = next_point.copy()
-        next_point = adjust_navigation_point(
+        next_point = next_point if route_guidance is not None else adjust_navigation_point(
             next_point,
             self.occupied,
             voxel_size=self._voxel_size,
@@ -710,7 +762,9 @@ class TSDFPlanner(TSDFPlannerBase):
 
         # determine the direction
         if target_arrived:  # if the next arriving position is the target point
-            if type(self.max_point) == Frontier:
+            if self.look_at_point is not None:
+                direction = self.look_at_point - next_point[:2]
+            elif type(self.max_point) == Frontier:
                 # direction = self.rad2vector(angle)  # if the target is a frontier, then the agent's orientation does not change
                 direction = (
                     self.target_point - cur_point[:2]
@@ -914,6 +968,7 @@ class TSDFPlanner(TSDFPlannerBase):
         if target_arrived:
             self.max_point = None
             self.target_point = None
+            self.look_at_point = None
 
         return (
             self.normal2habitat(next_point_normal),
@@ -1050,13 +1105,29 @@ class TSDFPlanner(TSDFPlannerBase):
     # Phase I: Hypothesis Graph Refinement - Hypothesis Node Semantic Prediction
     # ============================================================================
 
-    def _predict_hypothesis_node_semantics(self, scene, pts_habitat):
+    def finalize_hypothesis_node_semantics(
+        self, scene, pts_habitat, cached_semantics=None, preserve_node_ids=None,
+    ):
+        """Attach cached semantics and predict only misses after stable matching."""
+        if not self.enable_hypothesis_refinement:
+            return {}
+        return self._predict_hypothesis_node_semantics(
+            scene, pts_habitat, cached_semantics=cached_semantics,
+            preserve_node_ids=preserve_node_ids,
+        )
+
+    def _predict_hypothesis_node_semantics(
+        self, scene, pts_habitat, cached_semantics=None, preserve_node_ids=None,
+    ):
         """
         Predict semantic distributions for all frontiers (Hypothesis Nodes).
         Implements Phase I with Dependency DAG construction (Appendix C).
         """
+        cached_semantics = dict(cached_semantics or {})
+        preserve_node_ids = {str(value) for value in (preserve_node_ids or ())}
         if len(self.frontiers) == 0:
-            return
+            return {}
+        prediction_sources = {}
 
         # Deduplication: remove stale hypothesis nodes from previous steps
         active_frontier_ids = {f.frontier_id for f in self.frontiers}
@@ -1064,18 +1135,28 @@ class TSDFPlanner(TSDFPlannerBase):
         for node_id, node in list(self.hypothesis_graph.nodes.items()):
             if node.node_type == NodeType.HYPOTHESIS and node.associated_object is not None:
                 if hasattr(node.associated_object, "frontier_id"):
-                    if node.associated_object.frontier_id not in active_frontier_ids:
+                    if (node.associated_object.frontier_id not in active_frontier_ids
+                            and node_id not in preserve_node_ids):
                         stale_node_ids.append(node_id)
         for node_id in stale_node_ids:
             self.hypothesis_graph._remove_node(node_id)
 
         # Skip frontiers that already have valid hypothesis nodes
+        for frontier in self.frontiers:
+            cached = cached_semantics.get(frontier.frontier_id)
+            if cached is not None:
+                frontier.semantic_dist = cached
+                if (frontier.hypothesis_node_id is None or
+                        frontier.hypothesis_node_id not in self.hypothesis_graph.nodes):
+                    self._attach_hypothesis_node(frontier, cached)
+                prediction_sources[frontier.frontier_id] = "cache"
+
         frontiers_needing_prediction = [
             f for f in self.frontiers
             if f.hypothesis_node_id is None or f.hypothesis_node_id not in self.hypothesis_graph.nodes
         ]
         if len(frontiers_needing_prediction) == 0:
-            return
+            return prediction_sources
 
         spatial_context = self._build_spatial_context(scene, pts_habitat)
         predictions = self.hypothesis_node_predictor.batch_predict_frontiers(
@@ -1087,40 +1168,48 @@ class TSDFPlanner(TSDFPlannerBase):
             if frontier.frontier_id in predictions:
                 semantic_dist = predictions[frontier.frontier_id]
                 frontier.semantic_dist = semantic_dist
-                # Rule 1: Find nearest observed parent
-                parent_node_id = self._find_nearest_observed_parent(frontier)
-                hypothesis_node = create_hypothesis_node_from_frontier(
-                    frontier=frontier,
-                    semantic_dist=semantic_dist,
-                    parent_node_id=parent_node_id,
-                )
-                node_id = self.hypothesis_graph.add_node(hypothesis_node)
-                frontier.hypothesis_node_id = node_id
-                # Create dependency edge (Rule 1)
-                if parent_node_id is not None and parent_node_id in self.hypothesis_graph.nodes:
-                    top_cats, top_probs = semantic_dist.get_top_k(1)
-                    confidence = float(top_probs[0]) if len(top_probs) > 0 else 0.5
-                    from src.hypothesis_graph import CognitiveDependency
-                    dep = CognitiveDependency(
-                        parent_id=parent_node_id,
-                        child_id=node_id,
-                        dependency_type="frontier_to_room",
-                        confidence=confidence,
-                        reasoning=f"Frontier {frontier.frontier_id} nearest to observed node {parent_node_id}",
+                self._attach_hypothesis_node(frontier, semantic_dist)
+                prediction_sources[frontier.frontier_id] = (
+                    self.hypothesis_node_predictor.last_prediction_sources.get(
+                        frontier.frontier_id, "heuristic",
                     )
-                    try:
-                        self.hypothesis_graph.add_dependency(dep)
-                    except ValueError:
-                        pass
-                    # Rule 2: Room-to-object children
-                    self._create_room_to_object_hypotheses(node_id, semantic_dist)
-                logging.info(
-                    f"[Phase I] Hypothesis Node {node_id} for Frontier {frontier.frontier_id} (parent={parent_node_id})"
                 )
-                top_cats, top_probs = semantic_dist.get_top_k(3)
-                logging.info(
-                    f"  Top-3: {list(zip(top_cats, [f'{p:.2f}' for p in top_probs]))}"
-                )
+        return prediction_sources
+
+    def _attach_hypothesis_node(self, frontier, semantic_dist):
+        """Rebuild current transient HypothesisGraph binding for one frontier."""
+        parent_node_id = self._find_nearest_observed_parent(frontier)
+        hypothesis_node = create_hypothesis_node_from_frontier(
+            frontier=frontier,
+            semantic_dist=semantic_dist,
+            parent_node_id=parent_node_id,
+        )
+        node_id = self.hypothesis_graph.add_node(hypothesis_node)
+        frontier.hypothesis_node_id = node_id
+        if parent_node_id is not None and parent_node_id in self.hypothesis_graph.nodes:
+            top_cats, top_probs = semantic_dist.get_top_k(1)
+            confidence = float(top_probs[0]) if len(top_probs) > 0 else 0.5
+            from src.hypothesis_graph import CognitiveDependency
+            dep = CognitiveDependency(
+                parent_id=parent_node_id,
+                child_id=node_id,
+                dependency_type="frontier_to_room",
+                confidence=confidence,
+                reasoning=f"Frontier {frontier.frontier_id} nearest to observed node {parent_node_id}",
+            )
+            try:
+                self.hypothesis_graph.add_dependency(dep)
+            except ValueError:
+                pass
+            self._create_room_to_object_hypotheses(node_id, semantic_dist)
+        logging.info(
+            f"[Phase I] Hypothesis Node {node_id} for Frontier {frontier.frontier_id} (parent={parent_node_id})"
+        )
+        top_cats, top_probs = semantic_dist.get_top_k(3)
+        logging.info(
+            f"  Top-3: {list(zip(top_cats, [f'{p:.2f}' for p in top_probs]))}"
+        )
+        return node_id
 
 
     def _build_spatial_context(self, scene, pts_habitat) -> Dict:

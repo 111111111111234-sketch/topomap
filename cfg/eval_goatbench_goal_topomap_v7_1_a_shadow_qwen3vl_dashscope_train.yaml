@@ -1,0 +1,12 @@
+# V7.1-A: build a unified DIRECT/REVISIT/EXPLORE MetricAction view for all
+# three GOAT goal types. Shadow output is traced but never used for selection,
+# prompting, or navigation.
+extends: eval_goatbench_goal_topomap_v7_0_diagnostics_qwen3vl_dashscope_train.yaml
+exp_name: "exp_dev_goatbench_goal_topomap_v7_1_a_shadow_qwen3vl30b_dashscope_train"
+
+active_topology:
+  metric_execution:
+    enabled: true
+    shadow_only: true
+    planner_step_m: 1.0
+    goal_types: [object, description, image]

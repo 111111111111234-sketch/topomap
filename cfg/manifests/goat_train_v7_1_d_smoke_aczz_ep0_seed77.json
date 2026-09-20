@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset_dir": "data/goat_bench/train/content",
+  "seed": 77,
+  "purpose": "v7_1_d_commitment_activation_smoke",
+  "splits": {
+    "1": [
+      {
+        "scene_file": "ACZZiU6BXLz.json",
+        "scene_name": "ACZZiU6BXLz",
+        "episode_index": 0,
+        "episode_id": "0"
+      }
+    ]
+  }
+}

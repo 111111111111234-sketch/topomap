@@ -1,0 +1,9 @@
+# Active stage: the dynamic confidence projection changes only the relevance
+# presented to the frozen C-strict gate.  The validated direct-first executor,
+# route commitment and all metric safety checks remain unchanged.
+extends: eval_goatbench_goal_topomap_v7_dynamic_shadow_qwen3vl_dashscope_train_fast.yaml
+exp_name: "exp_devfast_goatbench_goal_topomap_v7_dynamic_active_qwen3vl30b_dashscope_train_3x2"
+
+active_topology:
+  dynamic_goal_topology:
+    shadow_only: false

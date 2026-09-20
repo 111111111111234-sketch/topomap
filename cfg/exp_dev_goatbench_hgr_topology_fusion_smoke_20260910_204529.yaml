@@ -1,0 +1,2 @@
+extends: eval_goatbench_hgr_topology_fusion_smoke.yaml
+exp_name: exp_dev_goatbench_hgr_topology_fusion_smoke_20260910_204529

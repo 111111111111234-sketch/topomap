@@ -1,0 +1,5 @@
+# M3 ablation: add deduplicated, verified incremental preemption.
+extends: eval_goatbench_hgr_dual_topo_intent_persistent.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_intent_preempt
+dual_dynamic_navigation:
+  enable_incremental_preemption: true

@@ -1,0 +1,7 @@
+extends: eval_goatbench_hgr_dual_topo_v2_memory_export.yaml
+exp_name: exp_dev_goatbench_hgr_v2_memory_export_smoke_aczz_r4
+episode_manifest: cfg/manifests/goat_train_v7_1_d_smoke_aczz_ep0_seed77.json
+controlled_memory:
+  mode: export
+  directory: results/hgr_v2_memory_checkpoints_smoke_aczz
+  prefix_subtasks: 1

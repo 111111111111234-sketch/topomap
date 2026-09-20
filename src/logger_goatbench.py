@@ -13,6 +13,82 @@ import habitat_sim
 
 from src.scene_goatbench import Scene
 from src.tsdf_planner import TSDFPlanner, Frontier, SnapShot
+from src.subtask_execution import summarize_execution_quality
+
+
+def _load_visualization_image(path, fallback=None):
+    """Load a run artifact, falling back to the in-memory candidate image."""
+    if os.path.exists(path):
+        return matplotlib.image.imread(path)
+    if fallback is None:
+        logging.warning("Visualization image unavailable: %s", path)
+        return None
+    if hasattr(fallback, "detach"):
+        fallback = fallback.detach().cpu().numpy()
+    image = np.asarray(fallback)
+    if image.ndim == 3 and image.shape[0] in (1, 3, 4) and image.shape[-1] not in (1, 3, 4):
+        image = np.moveaxis(image, 0, -1)
+    logging.info("Using in-memory image for restored visualization artifact: %s", path)
+    return image
+
+
+def compute_spl(success: bool, shortest_distance: float, traversed_distance: float) -> float:
+    """Compute a finite SPL value, conservatively scoring undefined paths as zero."""
+    return compute_spl_diagnostic(success, shortest_distance, traversed_distance)[0]
+
+
+def compute_spl_diagnostic(
+    success: bool, shortest_distance: float, traversed_distance: float
+):
+    """Return a finite SPL and a status explaining invalid or zero values."""
+    if not success:
+        return 0.0, "failure"
+    shortest_distance = float(shortest_distance)
+    traversed_distance = float(traversed_distance)
+    if not np.isfinite(shortest_distance) or shortest_distance < 0.0:
+        return 0.0, "invalid_shortest_distance"
+    if not np.isfinite(traversed_distance) or traversed_distance < 0.0:
+        return 0.0, "invalid_traversed_distance"
+    denominator = max(shortest_distance, traversed_distance)
+    if denominator == 0.0:
+        return 1.0, "zero_length_success"
+    return shortest_distance / denominator, "valid"
+
+
+def _finite_or_none(value):
+    if value is None:
+        return None
+    value = float(value)
+    return value if np.isfinite(value) else None
+
+
+def _json_safe(value):
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, np.ndarray):
+        return _json_safe(value.tolist())
+    if isinstance(value, np.integer):
+        return int(value)
+    if isinstance(value, (np.floating, float)):
+        return _finite_or_none(value)
+    return value
+
+
+def _sanitize_metric_mapping(values):
+    sanitized = {}
+    invalid_ids = []
+    for key, value in values.items():
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            numeric = np.nan
+        if not np.isfinite(numeric):
+            numeric = 0.0
+            invalid_ids.append(str(key))
+        sanitized[key] = numeric
+    return sanitized, invalid_ids
 
 
 class Logger:
@@ -170,6 +246,15 @@ class Logger:
         else:
             self.n_total_frames_list = {}
 
+        subtask_metrics_path = os.path.join(
+            output_dir, f"subtask_metrics_{start_ratio}_{end_ratio}_{split}.json"
+        )
+        if os.path.exists(subtask_metrics_path):
+            with open(subtask_metrics_path, "r") as f:
+                self.subtask_metrics = json.load(f)
+        else:
+            self.subtask_metrics = {}
+
         self.start_ratio = start_ratio
         self.end_ratio = end_ratio
         self.split = split
@@ -281,9 +366,18 @@ class Logger:
             "w",
         ) as f:
             json.dump(self.n_total_frames_list, f, indent=4)
+        with open(
+            os.path.join(
+                self.output_dir,
+                f"subtask_metrics_{self.start_ratio}_{self.end_ratio}_{self.split}.json",
+            ),
+            "w",
+        ) as f:
+            json.dump(_json_safe(self.subtask_metrics), f, indent=4, allow_nan=False)
 
     def aggregate_results(self):
         # aggregate the results into a single file
+        metric_validity = {}
         filenames_to_merge = [
             "success_by_snapshot",
             "spl_by_snapshot",
@@ -298,8 +392,16 @@ class Logger:
             for results_path in all_results_paths:
                 with open(results_path, "rb") as f:
                     all_results.update(pickle.load(f))
+            all_results, invalid_ids = _sanitize_metric_mapping(all_results)
+            metric_validity[filename] = {
+                "total": len(all_results),
+                "finite": len(all_results) - len(invalid_ids),
+                "invalid": len(invalid_ids),
+                "invalid_ids": invalid_ids,
+                "invalid_treatment": "replaced_with_zero",
+            }
             logging.info(
-                f"Total {filename} results: {100 * np.mean(list(all_results.values())):.2f}, len: {len(all_results)}"
+                f"Total {filename} results: {100 * np.mean(list(all_results.values())) if all_results else 0.0:.2f}, len: {len(all_results)}, invalid: {len(invalid_ids)}"
             )
             with open(os.path.join(self.output_dir, f"{filename}.pkl"), "wb") as f:
                 pickle.dump(all_results, f)
@@ -317,8 +419,19 @@ class Logger:
                             all_results[task_name] = []
                         all_results[task_name] += task_res
             for task_name, task_res in all_results.items():
+                sanitized, invalid_indices = _sanitize_metric_mapping(
+                    {str(index): value for index, value in enumerate(task_res)}
+                )
+                all_results[task_name] = list(sanitized.values())
+                metric_validity[f"{filename}:{task_name}"] = {
+                    "total": len(task_res),
+                    "finite": len(task_res) - len(invalid_indices),
+                    "invalid": len(invalid_indices),
+                    "invalid_indices": invalid_indices,
+                    "invalid_treatment": "replaced_with_zero",
+                }
                 logging.info(
-                    f"Total {filename} results for {task_name}: {100 * np.mean(task_res):.2f}, len: {len(task_res)}"
+                    f"Total {filename} results for {task_name}: {100 * np.mean(all_results[task_name]) if task_res else 0.0:.2f}, len: {len(task_res)}, invalid: {len(invalid_indices)}"
                 )
             with open(os.path.join(self.output_dir, f"{filename}.pkl"), "wb") as f:
                 pickle.dump(all_results, f)
@@ -334,7 +447,7 @@ class Logger:
         with open(os.path.join(self.output_dir, "n_filtered_snapshots.json"), "w") as f:
             json.dump(n_filtered_snapshots_list, f, indent=4)
         logging.info(
-            f"Average number of filtered snapshots: {np.mean(list(n_filtered_snapshots_list.values()))}"
+            f"Average number of filtered snapshots: {np.mean(list(n_filtered_snapshots_list.values())) if n_filtered_snapshots_list else 0.0}"
         )
 
         n_total_snapshots_list = {}
@@ -348,7 +461,7 @@ class Logger:
         with open(os.path.join(self.output_dir, "n_total_snapshots.json"), "w") as f:
             json.dump(n_total_snapshots_list, f, indent=4)
         logging.info(
-            f"Average number of total snapshots: {np.mean(list(n_total_snapshots_list.values()))}"
+            f"Average number of total snapshots: {np.mean(list(n_total_snapshots_list.values())) if n_total_snapshots_list else 0.0}"
         )
 
         n_total_frames_list = {}
@@ -362,8 +475,26 @@ class Logger:
         with open(os.path.join(self.output_dir, "n_total_frames.json"), "w") as f:
             json.dump(n_total_frames_list, f, indent=4)
         logging.info(
-            f"Average number of total frames: {np.mean(list(n_total_frames_list.values()))}"
+            f"Average number of total frames: {np.mean(list(n_total_frames_list.values())) if n_total_frames_list else 0.0}"
         )
+
+        subtask_metrics = {}
+        for metrics_path in glob.glob(
+            os.path.join(self.output_dir, "subtask_metrics_*.json")
+        ):
+            with open(metrics_path, "r") as f:
+                subtask_metrics.update(json.load(f))
+        with open(os.path.join(self.output_dir, "subtask_metrics.json"), "w") as f:
+            json.dump(subtask_metrics, f, indent=4, allow_nan=False)
+        with open(os.path.join(self.output_dir, "metric_validity.json"), "w") as f:
+            json.dump(metric_validity, f, indent=4, allow_nan=False)
+        with open(os.path.join(self.output_dir, "execution_quality.json"), "w") as f:
+            json.dump(
+                summarize_execution_quality(subtask_metrics),
+                f,
+                indent=4,
+                allow_nan=False,
+            )
 
     def log_subtask_result(
         self,
@@ -375,6 +506,16 @@ class Logger:
         n_filtered_snapshots,
         n_total_snapshots,
         n_total_frames,
+        agent_subtask_distance=None,
+        subtask_steps=None,
+        subtask_frames=None,
+        vlm_telemetry=None,
+        final_choice=None,
+        selected_topo_id=None,
+        timing=None,
+        navigation_diagnostics=None,
+        execution_outcome=None,
+        snapshot_mapping_diagnostics=None,
     ):
         if success_by_snapshot:
             self.success_by_snapshot[subtask_id] = 1.0
@@ -386,16 +527,18 @@ class Logger:
             self.success_by_distance[subtask_id] = 0.0
 
         # calculate the SPL
-        self.spl_by_snapshot[subtask_id] = (
-            self.success_by_snapshot[subtask_id]
-            * gt_subtask_explore_dist
-            / max(gt_subtask_explore_dist, self.subtask_explore_dist)
+        snapshot_spl, snapshot_spl_status = compute_spl_diagnostic(
+            success_by_snapshot,
+            gt_subtask_explore_dist,
+            self.subtask_explore_dist,
         )
-        self.spl_by_distance[subtask_id] = (
-            self.success_by_distance[subtask_id]
-            * gt_subtask_explore_dist
-            / max(gt_subtask_explore_dist, self.subtask_explore_dist)
+        distance_spl, distance_spl_status = compute_spl_diagnostic(
+            success_by_distance,
+            gt_subtask_explore_dist,
+            self.subtask_explore_dist,
         )
+        self.spl_by_snapshot[subtask_id] = snapshot_spl
+        self.spl_by_distance[subtask_id] = distance_spl
 
         self.success_by_task[goal_type].append(self.success_by_distance[subtask_id])
         self.spl_by_task[goal_type].append(self.spl_by_distance[subtask_id])
@@ -436,6 +579,43 @@ class Logger:
         self.n_filtered_snapshots_list[subtask_id] = n_filtered_snapshots
         self.n_total_snapshots_list[subtask_id] = n_total_snapshots
         self.n_total_frames_list[subtask_id] = n_total_frames
+        execution_outcome = dict(execution_outcome or {})
+        self.subtask_metrics[subtask_id] = _json_safe(
+            {
+                "subtask_id": subtask_id,
+                "goal_type": goal_type,
+                "success_by_snapshot": bool(success_by_snapshot),
+                "success_by_distance": bool(success_by_distance),
+                "spl_by_snapshot": snapshot_spl,
+                "spl_by_distance": distance_spl,
+                "spl_by_snapshot_status": snapshot_spl_status,
+                "spl_by_distance_status": distance_spl_status,
+                "gt_shortest_distance_m": gt_subtask_explore_dist,
+                "traversed_distance_m": self.subtask_explore_dist,
+                "agent_final_distance_m": agent_subtask_distance,
+                "subtask_steps": subtask_steps,
+                "subtask_frames": subtask_frames,
+                "n_filtered_snapshots": n_filtered_snapshots,
+                "n_total_snapshots": n_total_snapshots,
+                "n_total_frames": n_total_frames,
+                "vlm_telemetry": vlm_telemetry or {},
+                "final_choice": final_choice,
+                "snapshot_mapping_diagnostics": snapshot_mapping_diagnostics or {},
+                "selected_topo_id": selected_topo_id,
+                "timing": timing or {},
+                "navigation_diagnostics": navigation_diagnostics or {},
+                "execution_status": execution_outcome.get(
+                    "execution_status", "unknown"
+                ),
+                "termination_reason": execution_outcome.get(
+                    "termination_reason", "unknown"
+                ),
+                "termination_detail": execution_outcome.get(
+                    "termination_detail", {}
+                ),
+                "error_counts": execution_outcome.get("error_counts", {}),
+            }
+        )
 
         # clear the subtask logging
         self.subtask_object_observe_dir = None
@@ -601,8 +781,12 @@ class Logger:
                     img_path = os.path.join(
                         episode_frontier_dir, tsdf_planner.frontiers[i].image
                     )
-                    img = matplotlib.image.imread(img_path)
-                    axs[h_idx, w_idx].imshow(img)
+                    img = _load_visualization_image(
+                        img_path, tsdf_planner.frontiers[i].feature)
+                    if img is not None:
+                        axs[h_idx, w_idx].imshow(img)
+                    else:
+                        axs[h_idx, w_idx].set_title("Image unavailable")
                     if (
                         type(max_point_choice) == Frontier
                         and max_point_choice.image == tsdf_planner.frontiers[i].image
@@ -612,8 +796,9 @@ class Logger:
                     img_path = os.path.join(
                         episode_snapshot_dir, max_point_choice.image
                     )
-                    img = matplotlib.image.imread(img_path)
-                    axs[h_idx, w_idx].imshow(img)
+                    img = _load_visualization_image(img_path)
+                    if img is not None:
+                        axs[h_idx, w_idx].imshow(img)
                     axs[h_idx, w_idx].set_title("Snapshot Chosen")
         fig.suptitle(global_caption, fontsize=16)
         plt.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))

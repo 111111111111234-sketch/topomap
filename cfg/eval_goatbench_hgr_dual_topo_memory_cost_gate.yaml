@@ -1,0 +1,5 @@
+# M3 ablation: add revisit opportunity-cost and remaining-budget gates.
+extends: eval_goatbench_hgr_dual_topo_memory_dedup.yaml
+exp_name: exp_dev_goatbench_hgr_dual_topo_memory_cost_gate
+dual_dynamic_navigation:
+  enable_revisit_cost_gate: true

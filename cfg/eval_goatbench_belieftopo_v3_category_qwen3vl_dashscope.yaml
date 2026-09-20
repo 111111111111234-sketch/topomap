@@ -1,0 +1,25 @@
+extends: eval_goatbench_belieftopo_v2_category_qwen3vl_dashscope.yaml
+
+exp_name: "exp_eval_goatbench_belieftopo_v3_category_qwen3vl30b_dashscope"
+
+active_topology:
+  enabled: true
+  mode: belief_category_v3
+  belief:
+    use_vlm_tiebreak: false
+    unknown_action_threshold: 0.75
+    unknown_top_posterior_max: 0.30
+    max_consecutive_unknown_actions: 2
+    unknown_reset_posterior_delta: 0.05
+  confirmation:
+    max_steps: 8
+    max_approaches: 2
+  snapshot_gate:
+    min_compatibility: 0.90
+    min_detector_confidence: 0.50
+    min_detections: 2
+    min_posterior: 0.35
+    alias_min_detections: 3
+    alias_min_posterior: 0.85
+    best_candidate_margin: 0.05
+    rejection_ttl_steps: 5

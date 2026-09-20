@@ -1,0 +1,88 @@
+# Clean Qwen3-VL baseline: original HGR prompt and parser semantics.
+# This uses the Alibaba Cloud Model Studio Beijing OpenAI-compatible endpoint.
+seed: 77
+exp_name: "exp_eval_goatbench_qwen3vl30b_dashscope"
+output_parent_dir: "results"
+scene_dataset_config_path: "data/hm3d_annotated_val_local.scene_dataset_config.json"
+scene_data_path: "data"
+test_data_dir: "data/goat_bench/val_unseen/content/"
+concept_graph_config_path: "cfg/concept_graph_default.yaml"
+
+# All GOAT VLM calls use this same provider: explorer, Hypothesis Predictor,
+# and SemanticCritic. Set DASHSCOPE_API_KEY in the shell before launching.
+vlm_model: "qwen3-vl-30b-a3b-instruct"
+vlm_base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+vlm_api_key_env: "DASHSCOPE_API_KEY"
+vlm_reasoning_content_fallback: false
+vlm_structured_choice_fallback: false
+
+# Original HGR decision policy and visual-prompt behavior. Deliberately omit
+# max_prompt_images, so snapshots, crops, and frontiers are sent separately.
+choose_every_step: true
+egocentric_views: true
+prefiltering: true
+top_k_categories: 10
+
+yolo_model_name: yolov8x-world.pt
+sam_model_name: sam_l.pt
+class_set: scannet200
+min_detection: 1
+
+camera_height: 1.5
+camera_tilt_deg: -30
+img_width: 1280
+img_height: 1280
+hfov: 120
+
+success_distance: 1.0
+clear_up_memory_every_subtask: false
+use_full_obj_list: false
+save_visualization: true
+prompt_h: 360
+prompt_w: 360
+
+init_clearance: 0.3
+max_step_room_size_ratio: 2
+extra_view_phase_1: 2
+extra_view_angle_deg_phase_1: 60
+extra_view_phase_2: 6
+extra_view_angle_deg_phase_2: 40
+
+explored_depth: 1.7
+tsdf_grid_size: 0.1
+margin_w_ratio: 0.25
+margin_h_ratio: 0.6
+planner:
+  eps: 1
+  max_dist_from_cur_phase_1: 1
+  max_dist_from_cur_phase_2: 1
+  final_observe_distance: 1.5
+  surrounding_explored_radius: 0.7
+  frontier_edge_area_min: 4
+  frontier_edge_area_max: 6
+  frontier_area_min: 8
+  frontier_area_max: 9
+  min_frontier_area: 20
+  max_frontier_angle_range_deg: 150
+  region_equal_threshold: 0.95
+
+scene_graph:
+  confidence: 0.003
+  nms_threshold: 0.1
+  iou_threshold: 0.5
+  obj_include_dist: 3.5
+  target_obj_iou_threshold: 0.6
+
+hypothesis:
+  enable_hypothesis_refinement: true
+  enable_vlm_hypothesis_prediction: true
+  hypothesis_node_top_k_categories: 5
+  semantic_residual_threshold: 0.5
+  residual_weight_category: 0.4
+  residual_weight_feature: 0.3
+  residual_weight_objects: 0.3
+  enable_cascade_deletion: true
+  min_dependency_confidence: 0.6
+  enable_vlm_causality_diagnosis: true
+  use_hypothesis_node_semantics_in_prompt: true
+  enable_local_delete_only: false
